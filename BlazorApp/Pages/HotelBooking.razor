@@ -1,0 +1,139 @@
+﻿@page "/booking"
+@*@attribute [Authorize]*@
+@using BlazorApp.Helper
+@using BlazorApp.Service
+@using BlazorApp.Service.IService
+@using Microsoft.JSInterop
+@using Models
+@using BlazorApp.Data
+@using Business.Repository
+@using Business.Repository.IRepository
+@inject IJSRuntime JSruntime
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+@inject BlazorApp.Service.IService.ICustomerBookingService customerBookingServ
+@inject TokenProvider TokenProvider
+
+
+<PageTitle>Booking Report</PageTitle>
+<h1> View Booking </h1>
+<div class="row mt-4">
+    <div class="col-12">
+        <table class="table table-bordered table">
+            <thead>
+                <tr>
+                    <th>Customer Name</th>
+                    <th>Mobile</th>
+                     <th>Check-In-Date</th>
+                     <th>Days Booked</th>
+                     <th> check out</th>
+                     <th>Paid Amount</th>
+                 
+                </tr>
+            </thead>
+            <tbody>
+                @if (customerBookings.Any())
+                {
+                    foreach(var bookings in customerBookings)
+                    {
+                        <tr>
+                       
+                        <td>@bookings.customerName</td>
+                         <td>@bookings.customerMobile</td>
+                        <td>@bookings.checkInDate</td>
+                        <td>@bookings.daysBooked</td>
+                        <td>@bookings.isCheckedOut</td>
+                        <td>@bookings.amountPaid</td>
+                       
+                        
+                       
+                      
+                       
+                        <td>
+                             <NavLink href="@($"booking-Id/{bookings.id}")" class="btn btn-primary">View</NavLink> 
+                            
+                        </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <div class="spinner"></div>
+                    @*<tr colspan>No records found</tr>*@
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
+@code {
+    public string Id { get; set; }
+    private IEnumerable<CustomerBooking> customerBookings { get; set; } = new List<CustomerBooking>();
+    private string? DeleteBookingId { get; set; } = null;
+    private bool IsProcessing { get; set; } = false;
+    public string customerID { get; set; }
+
+     private string _authMessage;
+    private string _surnameMessage;
+    private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
+
+    private async Task GetClaimsPrincipalData()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            _authMessage = $"{user.Identity.Name} is authenticated.";
+            _claims = user.Claims;
+            _surnameMessage = 
+                $"Surname: {user.FindFirst(c => c.Type == ClaimTypes.Surname)?.Value}";
+        }
+        else
+        {
+            _authMessage = "The user is NOT authenticated.";
+        }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        //HotelAmenity = await hotelAmenityService.GetAllHotelAmenities());
+
+        customerBookings = await customerBookingServ.getAllBooking();
+    }
+
+
+    //private async Task HandleDelete(string bookingId)
+    //{
+    //    DeleteBookingId = bookingId;
+    //    await JSruntime.InvokeVoidAsync("showDeleteConfirmationModal");
+    //}
+
+    //public async Task ConfirmDelete_Click(bool isConfirmed)
+    //{
+    //    IsProcessing = true;
+    //    if(isConfirmed && DeleteBookingId != null)
+    //    {
+    //        try
+    //        {
+    //            var result = await customerBookingServ.CancelBooking(DeleteBookingId);
+    //            await JSruntime.ToastrSuccess("Booking canceled successfully");
+    //        }
+    //        catch (Exception e)
+    //        {
+    //            await JSruntime.ToastError(e.Message);
+    //        }
+    //        customerBookings = await customerBookingServ.getAllBooking();
+
+    //    }
+    //     await JSruntime.InvokeVoidAsync("HideDeleteConfirmationModal");
+    //    IsProcessing = false;
+
+    //}
+    
+ }

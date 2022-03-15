@@ -1,0 +1,39 @@
+﻿@using BlazorApp.Model
+@using System.Threading
+
+
+<div class="bg-light border p-2 col-5 " @onclick="(args)=> AminitiesClickSelectionChanged(args,individualAmenity.Name)">
+             
+             
+           
+              <p>Amenities-@individualAmenity.Id </p>
+              <p>@individualAmenity.Name </p>
+             <p>@individualAmenity.Description</p> 
+             <span>RF from parent - @frag</span>
+             <span>@frag2</span>
+             
+           
+ </div>
+ 
+@code {
+    public bool SelectedAmenities { get; set; }
+
+
+    [Parameter]
+    public BlazorAmenities individualAmenity{ get; set; }
+
+    [Parameter]
+    public  EventCallback<string> OnAmenitiesSelection{ get; set; }
+    protected async Task AminitiesClickSelectionChanged(MouseEventArgs e, string name)
+    {
+        await OnAmenitiesSelection.InvokeAsync((string)name);
+    }
+     
+
+    [Parameter]
+    public RenderFragment frag { get; set; }
+    [Parameter]
+    public RenderFragment frag2 { get; set; }
+
+
+}

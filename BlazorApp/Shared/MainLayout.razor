@@ -1,0 +1,81 @@
+﻿
+@inherits LayoutComponentBase
+ <MudThemeProvider/>
+ <MudDialogProvider/>
+ <MudSnackbarProvider/>
+
+<PageTitle>LaVillaAdmin</PageTitle>
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        
+       <MudLayout>
+           
+           <MudAppBar Color="Color.Info" Fixed="false"  Elevation="250">
+               <div  >
+                 <a class ="nav-link text-dark" id="titlebar" href="">
+
+                         <img src="/Images//lavill.jpg"  alt="Tabler" class="navbar-brand-image me-2 imagelaVille"  width="100" height="50" >
+                 </a>
+                   @*<button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+                       <span class="navbar-toggler-icon"></span>
+                   </button>*@
+
+             </div>
+               
+              
+               <MudSpacer />
+               @*<LoginDisplay></LoginDisplay>*@
+               <a class="nav-link text-dark" id="register" href="/Identity/Account/Register">Register</a>
+               <a class="nav-link alert-dark id="login" href="/Identity/Account/Login">Login</a>
+
+
+
+               @*<MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" />*@
+                @*<div class="top-row px-4">
+            <LoginDisplay /> 
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            
+        </div>*@
+            </MudAppBar>
+     
+           @*<MudDrawer @bind-Open="@_drawerOpen">
+               <MyNavMenu/>
+           </MudDrawer>*@
+           <MudMainContent>
+               <MudContainer MaxWidth="MaxWidth.Large">
+                    @Body
+               </MudContainer>
+               
+           </MudMainContent>
+       </MudLayout>
+       @* <article class="content px-4">
+           
+        </article>*@
+    </main>
+</div>
+
+
+@code{
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+     private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+    
+    
+
+}

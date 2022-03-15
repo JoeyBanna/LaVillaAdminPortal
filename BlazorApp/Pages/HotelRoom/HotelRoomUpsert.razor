@@ -1,0 +1,517 @@
+﻿@page "/hotel-room/create"
+@page "/hotel-room/edit/{Id}"
+@using BlazorApp.ModelsModels
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@using Business.Repository.IRepository
+@using BlazorApp.Models
+@using BlazorApp.Service.IService
+@using System.Drawing
+@using global::Models
+@inject IHotelRoomImagesRepository HotelRoomImageRepository
+@inject IHotelRoomRepository HotelRoomRepository
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
+@inject IFileUpload FileUPload
+@inject BlazorApp.Service.IHotelRoomService _hotelRoomService
+@inject BlazorApp.Service.IService.IHotelRoomImageService _hotelImageService
+
+
+<div class="row mt-2 mb-5">
+    <h3 class="card-title text-info mb-3 ml-3">@Title Model Room</h3>
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <EditForm Model="createHotelRoomModel" OnValidSubmit="HandleHotelRoomUpsert">
+                    <DataAnnotationsValidator />
+                    @* <ValidationSummary />*@
+                    <div class="form-group">
+                        <label>Name</label>
+                        <InputText @bind-Value="createHotelRoomModel.name" class="form-control"></InputText>
+                        <ValidationMessage For="()=>createHotelRoomModel.name"></ValidationMessage>
+                    </div>
+                    <div class="form-group">
+                        <label>Occupancy</label>
+                        <InputNumber @bind-Value="createHotelRoomModel.occupancy" class="form-control"></InputNumber>
+                        <ValidationMessage For="()=>createHotelRoomModel.occupancy"></ValidationMessage>
+                    </div>
+                    <div class="form-group">
+                        <label>Rate</label>
+                        <InputNumber @bind-Value="createHotelRoomModel.regularRate" class="form-control"></InputNumber>
+                        <ValidationMessage For="()=>createHotelRoomModel.regularRate"></ValidationMessage>
+                    </div>
+                    <div class="form-group">
+                        <label>Room-Size</label>
+                        <InputText @bind-Value="createHotelRoomModel.sqFt" class="form-control"></InputText>
+                    </div>
+                    <div class="form-group" style="height:250px ">
+                        <label>Details</label>
+                        @*<InputTextArea @bind-Value="HotelRoomModel.Details" class="form-control"></InputTextArea>*@
+                        <BlazoredTextEditor @ref="@QuillHtml" Placeholder="Please enter room details">
+                            <ToolbarContent>
+                                <select class="ql-header">
+                                    <option selected=""></option>
+                                    <option value="1"></option>
+                                    <option value="2"></option>
+                                    <option value="3"></option>
+                                    <option value="4"></option>
+                                    <option value="5"></option>
+                                </select>
+                                <span class="ql-formats">
+                                    <button class="ql-bold"></button>
+                                    <button class="ql-italic"></button>
+                                    <button class="ql-underline"></button>
+                                    <button class="ql-strike"></button>
+                                </span>
+                                <span class="ql-formats">
+                                    <select class="ql-color"></select>
+                                    <select class="ql-background"></select>
+                                </span>
+                                <span class="ql-formats">
+                                    <button class="ql-list" value="ordered"></button>
+                                    <button class="ql-list" value="bullet"></button>
+                                </span>
+                                <span class="ql-formats">
+                                    <button class="ql-link"></button>
+                                </span>
+                            </ToolbarContent>
+                            <EditorContent>
+                                @*  <h4>This Toolbar works with HTML</h4>
+                                    <a href="http://BlazorHelpWebsite.com">
+                                    BlazorHelpWebsite.com</a>*@
+                            </EditorContent>
+                        </BlazoredTextEditor>
+                    </div>
+                    <div>
+                        
+                    </div>
+                    <div class="form-group" style="padding-top:100px;">
+                        <InputFile OnChange="HandleImageUpload" multiple></InputFile>
+                          
+                        
+                        <div class="row">
+                            @if (IsImageUploadProcesssStarted)
+                            {
+                                <div class="col-md-12">
+                                    <span><i class="fa fa-spin fa-spinner"></i> Please wait ... Images are loading </span>
+                                </div>
+
+                            }
+                            @if ( HotelRoomModel.ImageUrls != null && createHotelRoomModel.hotelRoomImages.Count > 0)
+                                {
+                                    int serial = 1;
+                                    foreach (var roomImage in HotelRoomModel.ImageUrls)
+                                    {
+                                        if(Title == "Create")
+                                        {
+                                            <div class="col-md-2 mt-3">
+                                                <div>
+                                                     <img src="data:image/jpg;base64,@roomImage" style="background-image" width="170" height="150" >
+                                                 
+                                                </div>
+                                               
+                                            
+                                                <button type="button" @onclick="()=>DeletePhoto(roomImage)" class="btn btn-outline-danger btn-block mt-4">
+                                                    Delete
+                                              </button>
+                                        </div>
+                                        
+                                    }
+                                    else
+                                    {
+                                       @* System.IO.FileInfo fileInfo = new System.IO.FileInfo(roomImage);
+                                        if(fileInfo.Extension.ToLower() != ".jpg" || fileInfo.Extension.ToLower() != ".png" || fileInfo.Extension.ToLower() != ".jpeg")
+                                            {*@
+                                        if(Title == "Update")
+                                        {
+                                             System.IO.FileInfo fileInfo = new System.IO.FileInfo(roomImage);
+                                                if (fileInfo.Extension.ToLower() != ".jpg" || fileInfo.Extension.ToLower() != ".png" || fileInfo.Extension.ToLower() != ".jpeg")
+                                                {
+                                                    <div class="col-md-2 mt-3">
+                                                <div class="room-image" style="background: url('@roomImage') 50% 50%; ">
+                                                    <span class="room-image-tittle">@serial</span>
+                                                </div>
+                                                <button type="button" @onclick="()=>DeletePhoto(roomImage)" class="btn btn-outline-danger btn-block mt-4">
+                                                    Delete
+                                                </button>
+                                            </div>
+                                            serial++;
+
+                                                }
+                                           
+                                        }
+                                        else
+                                        {
+                                              foreach(var room in HotelRoomModel.ImageUrls)
+                                            {
+                                                 System.IO.FileInfo fileInfo = new System.IO.FileInfo(room);
+                                                if (fileInfo.Extension.ToLower() == ".jpg" || fileInfo.Extension.ToLower() == ".png" || fileInfo.Extension.ToLower() == ".jpeg")
+                                                {
+                                                     string base64String = Base64Converter.ConvertImageURLToBase64(room);
+                                                    <div class="col-md-2 mt-3">
+                                                        <div>
+                                                             <img src="data:image/jpg;base64,@base64String" style="background-image" width="170" height="150" >
+                                                 
+                                                        </div>
+                                               
+                                                        <button type="button" @onclick="()=>DeletePhoto(room)" class="btn btn-outline-danger btn-block mt-4">
+                                                            Delete
+                                                      </button>
+                                                    </div>
+
+                                                }
+
+                                            }
+                                        
+                                            
+                                        }
+                                        }
+                                    
+                                    }
+                                }
+                            
+                        </div>
+                    </div>
+                   
+                    <br />
+                    @if(createHotelRoomModel.regularRate == 0 || createHotelRoomModel.occupancy == 0  || String.IsNullOrWhiteSpace(createHotelRoomModel.sqFt) && createHotelRoomModel.details== null)
+                    {
+                        <div class="form-group">
+                        <button class="btn btn-info" disabled>@Title Room</button>
+                        <NavLink href="hotel-room" class="btn btn-secondary">Back to Index</NavLink>
+                        </div>
+                    }
+                    else
+                    {
+                        
+                         <div class="form-group">
+                        <button class="btn btn-primary">@Title Room</button>
+                        <NavLink href="hotel-room" class="btn btn-secondary">Back to Index</NavLink>
+                    </div>
+                        
+                    }
+                   
+                </EditForm>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+    private CreateHotelRoomModel createHotelRoomModel { get; set; } = new CreateHotelRoomModel();
+    private HotelRoomDT HotelRoomModel { get; set; } = new HotelRoomDT();
+    public string Name { get; set; }
+    private string Title { get; set; } = "Create";
+    private HotelRoomImageDT RoomImage { get; set; } = new HotelRoomImageDT();
+    private List<string> DeleteImagesNames { get; set; } = new List<string>();
+    private bool IsImageUploadProcesssStarted { get; set; } = false;
+    public BlazoredTextEditor QuillHtml { get; set; } = new BlazoredTextEditor();
+    public List<string> pics { get; set; } = new List<string>();
+    public string pathForImage { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        if (Id != null)
+        {
+            Title = "Update";
+
+            HotelRoomModel = await _hotelRoomService.GetHotelRoomById(Id);
+            if (HotelRoomModel?.HotelRoomImages != null)
+            {
+                HotelRoomModel.ImageUrls = HotelRoomModel.HotelRoomImages.Select(u => u.roomImage).ToList();
+            }
+
+            createHotelRoomModel = new CreateHotelRoomModel()
+                {
+                    details=HotelRoomModel.details,
+                    name = HotelRoomModel.name,
+                    hotelRoomImages = HotelRoomModel.HotelRoomImages,
+                    occupancy= HotelRoomModel.occupancy,
+                    regularRate=HotelRoomModel.regularRate,
+                    sqFt=HotelRoomModel.sqFt
+        };
+
+        }
+        else
+        {
+            HotelRoomModel = new HotelRoomDT();
+        }
+
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+        bool loading = true;
+        while (loading)
+        {
+            try
+            {
+
+                if (!string.IsNullOrEmpty(HotelRoomModel.details))
+                {
+                    await this.QuillHtml.LoadHTMLContent(HotelRoomModel.details);
+                }
+                loading = false;
+            }
+            catch
+            {
+                await Task.Delay(10);
+                loading = true;
+            }
+        }
+
+        //return base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task HandleHotelRoomUpsert()
+    {
+        try
+        {
+            //Creating and Updating
+
+            //var roomDetailsByName = await HotelRoomRepository.HotelRoomNameAlreadyExist(HotelRoomModel.name, HotelRoomModel.id);
+
+
+
+            Title = "Update";
+            if (Id != null && Title == "Update")
+            {
+
+                HotelRoomModel.details = await QuillHtml.GetHTML();
+                //update
+                createHotelRoomModel.Id = Id;
+                var updateRoomResult = await _hotelRoomService.UpdateHotelRoom(Id, createHotelRoomModel);
+                var response = updateRoomResult;
+                if ((HotelRoomModel.ImageUrls != null && HotelRoomModel.ImageUrls.Any()) ||
+                (DeleteImagesNames != null && DeleteImagesNames.Any())) ;
+                {
+                    if (DeleteImagesNames != null && DeleteImagesNames.Any())
+                    {
+                        foreach (var deletedImageName in DeleteImagesNames)
+                        {
+                            var imageName = deletedImageName.Replace($"{NavigationManager.BaseUri}RoomImages/", "");
+                            var result = FileUPload.DeleteFile(imageName);
+                            //await _hotelImageService.DeleteHotelImageByImageURL(deletedImageName);
+                            await HotelRoomImageRepository.DeleteHotelImageByImageURL(deletedImageName);
+
+                        }
+                    }
+
+                    //await AddHotelRoomImage(response);
+                }
+                await JsRuntime.ToastrSuccess("Hotel room successfully updated.");
+            }
+            else
+            {
+                //if (HotelRoomModel.name != null)
+                //{
+                //    await JsRuntime.ToastError("Hotel room name already exist");
+                //    return;
+                //}   
+
+                //create
+                Title = "Create";
+                createHotelRoomModel.details = await QuillHtml.GetHTML();
+
+                var createdResult = await _hotelRoomService.CreateHotelRoomModel(createHotelRoomModel);
+
+                var response = createdResult;
+                //await AddHotelRoomImage(response);
+
+                await JsRuntime.ToastrSuccess("Hotel room successfully created.");
+
+
+
+
+            }
+        }
+        catch (Exception ex)
+        {
+
+        }
+
+
+        NavigationManager.NavigateTo("hotel-room");
+    }
+    //public async void SetHTML()
+    //{
+    //    if (!string.IsNullOrEmpty(HotelRoomModel.Details))
+    //    {
+    //        this.QuillHtml.LoadHTMLContent(HotelRoomModel.Details);
+    //    }
+    //    StateHasChanged();
+    //}
+
+    //private async Task AddHotelRoomImage(HotelRoomDT roomDetails)
+    //{
+    //    if (HotelRoomModel.ImageUrls != null)
+    //    {
+    //        foreach (var imageUrl in HotelRoomModel.ImageUrls)
+    //        {
+    //            if (HotelRoomModel.HotelRoomImages == null || HotelRoomModel.HotelRoomImages.Where(x => x.roomImage == imageUrl).Count() == 0)
+    //            {
+    //                RoomImage = new HotelRoomImageDT()
+    //                    {
+    //                    roomId = roomDetails.id,
+    //                    roomImage = imageUrl
+    //                    };
+    //                await _hotelImageService.CreateHotelRoomImage(RoomImage);
+
+    //            }            
+    //        }
+    //    }
+
+
+    //}
+    internal async Task DeletePhoto(string imageUrl)
+    {
+        try
+        {
+            var imageIndex = HotelRoomModel.ImageUrls.FindIndex(x => x == imageUrl);
+            var imageName = imageUrl.Replace($"{NavigationManager.BaseUri}RoomImages/", "");
+            if (HotelRoomModel.id == null && Title == "create")
+            {
+                var result = FileUPload.DeleteFile(imageName);
+            }
+            else
+            {
+                //update
+                DeleteImagesNames ??= new List<string>();
+                DeleteImagesNames.Add(imageUrl);
+            }
+            HotelRoomModel.ImageUrls.RemoveAt(imageIndex);
+        }
+        catch (Exception ex)
+        {
+            await JsRuntime.ToastError(ex.Message);
+
+        }
+    }
+
+    private async Task<string> ImageToBase64(string _imagePath)
+    {
+        pathForImage = _imagePath;
+        string _base64String = null;
+
+        using (System.Drawing.Image _image = System.Drawing.Image.FromFile(_imagePath))
+        {
+            using (MemoryStream _mStream = new MemoryStream())
+            {
+                _image.Save(_mStream, _image.RawFormat);
+                byte[] _imageBytes = _mStream.ToArray();
+                _base64String = Convert.ToBase64String(_imageBytes);
+
+                return //"data:image/jpg;base64," + 
+                _base64String;
+            }
+        }
+    }
+
+
+    private async Task HandleImageUpload(InputFileChangeEventArgs e)
+    {
+
+        IsImageUploadProcesssStarted = true;
+        try
+        {
+            var images = new List<string>();
+            var converted = new List<string>();
+            if (e.GetMultipleFiles().Count > 0)
+            {
+                foreach (var file in e.GetMultipleFiles())
+                {
+
+                    System.IO.FileInfo fileInfo = new System.IO.FileInfo(file.Name);
+                    if (fileInfo.Extension.ToLower() == ".jpg" || fileInfo.Extension.ToLower() == ".png" || fileInfo.Extension.ToLower() == ".jpeg")
+                    {
+                        var uploadedImagePath = await FileUPload.uploadFile(file);
+
+                        var b64string = await ImageToBase64(uploadedImagePath);
+                        var fb64image = await LoadBase64(b64string);
+
+                        images.Add(b64string);
+
+
+                       
+                    }
+                    else
+                    {
+                        await JsRuntime.ToastError("Please select .jpg/.jpeg/.png file only");
+                        return;
+                    }
+                }
+                if (images.Any())
+                {
+                    foreach (var image in images)
+                    {
+                        createHotelRoomModel.hotelRoomImages.Add(new HotelRoomImage()
+                            {
+                                roomImage = image
+                            });
+
+                    }
+                    HotelRoomModel.HotelRoomImages = createHotelRoomModel.hotelRoomImages;
+                    //HotelRoomModel.ImageUrls = HotelRoomModel.HotelRoomImages.Select(u => u.roomImage).ToList();
+
+                    if (HotelRoomModel.ImageUrls != null && HotelRoomModel.ImageUrls.Any())
+                    {
+                        HotelRoomModel.ImageUrls.AddRange(images);
+                    }
+                    else
+                    {
+                        
+                        HotelRoomModel.ImageUrls = new List<string>();
+                        HotelRoomModel.ImageUrls.AddRange(images);
+
+                    }
+                    
+                    
+                    //if (createHotelRoomModel.hotelRoomImages != null && createHotelRoomModel.hotelRoomImages.Any())
+                    //{
+                        
+                    //    createHotelRoomModel.hotelRoomImages.AddRange(new List<HotelRoomImage>().Add(images));
+
+                    //}
+                    //else
+                    //{
+                    //    createHotelRoomModel.hotelRoomImages = new List<string>();
+                    //    createHotelRoomModel.hotelRoomImages.AddRange(images);
+                    //}
+                }
+                else
+                {
+                    await JsRuntime.ToastError("Failed to upload image.");
+                    
+                    return;
+                }
+
+            }
+            IsImageUploadProcesssStarted = false;
+        }
+        catch (Exception ex)
+        {
+            await JsRuntime.ToastError(ex.Message);
+        }
+
+    }
+    public async Task <Image> LoadBase64(string base64)
+    {
+	    byte[] bytes = Convert.FromBase64String(base64);
+        Image image;
+        using (MemoryStream ms = new MemoryStream(bytes))
+        {
+            image = Image.FromStream(ms);
+        }
+        return image;
+    }
+  
+     
+} 

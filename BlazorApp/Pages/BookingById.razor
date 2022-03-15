@@ -1,0 +1,131 @@
+﻿@page "/booking-Id/{Id}"
+@using BlazorApp.Models
+@inject Service.IService.ICustomerBookingService customeerBookingService
+@inject IJSRuntime JSruntime
+@inject Service.IService.ICustomerBookingService customerBookingServ
+@inject NavigationManager NavigationManager
+
+<div class="row mt-3 mb-2">
+    <h3 class="card-title text-info mb-3 ml-3"> </h3>
+    <div class="col-md-12">
+       <div class="card">
+          <div class="card-body">
+              <EditForm Model="customerBooking" OnSubmit="HandleConfirmation" >
+                   <DataAnnotationsValidator />
+                     @*<ValidationSummary />*@
+                  <div class="form-group">
+                        <label>Name</label>
+                        <InputText @bind-Value="customerBooking.customerName" class="form-control" disabled></InputText>
+                </div>
+                 <div class="form-group mt-4">
+                    <label>Mobile</label>
+                    <InputText @bind-Value=customerBooking.customerMobile class="form-control" disabled></InputText>
+                 
+                </div>
+                <div class="form-group mt-4 ">
+                    <label>Email</label>
+                    <InputText @bind-Value="customerBooking.customerEmailAddress" class="form-control" disabled></InputText>
+                   
+                </div>
+                    <div class="form-group mt-4 ">
+                    <label>Check-In-Date</label>
+                    <InputDate @bind-Value="customerBooking.checkInDate" class="form-control" disabled></InputDate>
+                   
+                </div>
+                    <div class="form-group mt-4 ">
+                    <label>Days Booked</label>
+                    <InputNumber @bind-Value="customerBooking.daysBooked" class="form-control" disabled></InputNumber>
+                   
+                </div>
+                 <div class="form-group mt-4 ">
+                    <label>Paid Amount</label>
+                    <InputNumber @bind-Value="customerBooking.amountPaid" class="form-control" disabled></InputNumber>
+                   
+                </div>
+                @*<div class="form-group mt-4 ">
+                    <label>Timing</label>
+                    <InputCheckbox @bind-Value="customerBooking.isCheckedOut" class="form-control"></InputCheckbox>
+                   
+                </div>*@
+                  <br />
+                     <div class="form-group">
+                        <button class="btn btn-primary">Check In</button>
+                        <NavLink href="/" class="btn btn-secondary">Back to Index</NavLink>
+                        
+                        
+                       
+                    </div>
+                    <br />
+                       
+                        
+                        
+                    
+                 
+              </EditForm>
+               <button class="btn btn-danger btn" @onclick="()=>HandleDelete(customerBooking.id)">Cancel Booking</button>
+         </div>
+      </div>
+    </div>
+</div>
+<DeleteConfirmationComp isParentComponentProcessing="IsProcessing" ConfirmationChanged="ConfirmDelete_Click"></DeleteConfirmationComp>
+
+
+
+@code {
+    [Parameter]
+    public string? Id{ get; set; }
+    private CustomerBooking customerBooking { get; set; } = new CustomerBooking();
+    public string DeleteBookingId{ get; set; }
+    private bool IsProcessing { get; set; } = false;
+    private IEnumerable<CustomerBooking> customerBookings { get; set; } = new List<CustomerBooking>();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        customerBooking = await customeerBookingService.GetBooking(Id);
+    }
+
+
+
+    private async Task HandleDelete(string bookingId)
+    {
+        DeleteBookingId = bookingId;
+        await JSruntime.InvokeVoidAsync("showDeleteConfirmationModal");
+    }
+
+    public async Task ConfirmDelete_Click(bool isConfirmed)
+    {
+        IsProcessing = true;
+        if(isConfirmed && DeleteBookingId != null)
+        {
+            try
+            {
+                var result = await customerBookingServ.CancelBooking(DeleteBookingId);
+                await JSruntime.ToastrSuccess("Booking canceled successfully");
+               
+            }
+            catch (Exception e)
+            {
+                await JSruntime.ToastError(e.Message);
+            } 
+             IsProcessing =false;
+            NavigationManager.NavigateTo("/booking");
+            
+
+        }
+        await JSruntime.InvokeVoidAsync("HideDeleteConfirmationModal");
+        IsProcessing = false;
+
+    }
+    public async Task HandleConfirmation()
+    {
+        
+        
+         IsProcessing = false;
+         await JSruntime.SweetConfirm( "Check in Succesful");
+        NavigationManager.NavigateTo("/booking");
+    }
+
+
+}

@@ -1,0 +1,172 @@
+﻿@page "/hotel-room"
+@using BlazorApp.ModelsModels
+@using Microsoft.AspNetCore.Authorization
+@*@attribute [Authorize]*@
+@using BlazorApp.Models
+@using BlazorApp.Data
+@using Models
+@using Business.Repository.IRepository
+@inject IHotelRoomRepository HotelRoomRepository
+@inject IJSRuntime JSruntime
+@inject BlazorApp.Service.IService.IFileUpload FileUpload
+@inject NavigationManager NavigationManager
+@inject BlazorApp.Service.IHotelRoomService _hotelRoomService
+
+
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@using System.Text.Json
+@using System.Net.Http.Headers;
+@using Models
+@inject IHttpClientFactory Factory
+@inject TokenProvider TokenProvider
+
+
+<div class="row mt-4">
+    <div class="col-8">
+        <h4 class="card-title text-info "> Hotel Room's</h4>
+    </div>
+    <div class="col-3 offset-1">
+        <NavLink href ="hotel-room/create" class="btn btn-info form-control">Add New Room </NavLink>
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-12">
+        <table class="table table-bordered table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Occupancy</th>
+                    <th>Rate</th>
+                    <th>
+                        Room Size
+                        </th>
+                    <th>
+
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @if (HotelRoomsfromAPI.Any())
+                {
+                    foreach(var rooms in HotelRoomsfromAPI)
+                    {
+                        <tr>
+                       
+                        <td>@rooms.name</td>
+                        <td>@rooms.occupancy</td>
+                        <td>@rooms.regularRate.ToString("c")</td>
+                        <td>@rooms.sqFt</td>
+                       
+                        <td>
+                            <NavLink href="@($"hotel-room/edit/{rooms.id}")" class="btn btn-primary">Edit</NavLink>  
+                            <button class="btn btn-danger btn" @onclick="()=>HandleDelete(rooms.id)">Delete</button>
+                        </td>
+                        </tr>
+                    }
+                        
+                        
+
+                }
+                else
+                {
+                    <div class="spinner"></div>
+                    @*//<tr colspan>No records found</tr>*@
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+<DeleteConfirmationComp isParentComponentProcessing="IsProcessing" ConfirmationChanged="ConfirmDelete_Click"></DeleteConfirmationComp>
+
+@code {
+
+
+    private IEnumerable<HotelRoomDTO> HotelRooms { get; set; } = new List<HotelRoomDTO>();
+    private IEnumerable<HotelRoomDT> HotelRoomsfromAPI { get; set; } = new List<HotelRoomDT>();
+    private IEnumerable <CreateHotelRoomModel> createHotelRoomModel { get; set; } = new List<CreateHotelRoomModel>();
+    private string? DeleteRoomId { get; set; } = null;
+    private bool IsProcessing { get; set; } = false;
+    public string Id { get; set; }
+    public IEnumerable<HotelRoomImage> hotelRoomImages { get; set; } = new List<HotelRoomImage>();
+
+
+
+    private string _authMessage;
+    private string _surnameMessage;
+    private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
+
+    private async Task GetClaimsPrincipalData()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            _authMessage = $"{user.Identity.Name} is authenticated.";
+            _claims = user.Claims;
+            _surnameMessage = 
+                $"Surname: {user.FindFirst(c => c.Type == ClaimTypes.Surname)?.Value}";
+        }
+        else
+        {
+            _authMessage = "The user is NOT authenticated.";
+        }
+    }
+
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+
+        HotelRoomsfromAPI = await _hotelRoomService.GetHotelRoomsFromApi(TokenProvider.AccessToken);
+    }
+
+    //protected override async Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    await JSruntime.InvokeVoidAsync("showDeleteConfirmationModal");
+    //    //return base.OnAfterRenderAsync(firstRender);
+    //}
+    private async Task HandleDelete(string roomId)
+    {
+        DeleteRoomId = roomId;
+        await JSruntime.InvokeVoidAsync("showDeleteConfirmationModal");
+    }     
+    public async Task ConfirmDelete_Click(bool isConfirmed)
+    {
+        IsProcessing = true;
+        if(isConfirmed && DeleteRoomId != null)
+        {
+            HotelRoomDT hotelRoom = await _hotelRoomService.GetHotelRoomById(DeleteRoomId);
+            foreach (var image in hotelRoom.HotelRoomImages)
+            {
+                if(image.roomImage != null)
+                {
+                    await _hotelRoomService.DeleteHotelRoom(DeleteRoomId);
+                    var imageName = image.roomImage.Replace($"{NavigationManager.BaseUri}RoomImages/", "");
+                    FileUpload.DeleteFile(imageName);
+                    
+                    await JSruntime.ToastrSuccess("Hotel room deleted successfully");
+                    HotelRoomsfromAPI = await _hotelRoomService.GetHotelRoomsFromApi(TokenProvider.AccessToken);
+                }
+                else
+                {
+                    await _hotelRoomService.DeleteHotelRoom(DeleteRoomId);
+                    IsProcessing = false;
+                }
+
+            }
+
+            
+        }
+      await JSruntime.InvokeVoidAsync("HideDeleteConfirmationModal");
+        IsProcessing = false;
+    }
+    
+}

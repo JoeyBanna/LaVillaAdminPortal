@@ -1,0 +1,11 @@
+﻿@if (isAdmin)
+{
+     <button type="button" class="btn btn-danger">Delete</button>
+               <input class="btn btn-primary" type="button" value="Exit">
+}
+
+
+@code{
+    [Parameter]
+    public bool isAdmin{ get; set; }
+}

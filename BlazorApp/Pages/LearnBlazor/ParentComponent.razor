@@ -1,0 +1,21 @@
+﻿@page "/ParentComponent"
+
+<h1 class="text-danger">Parent child Component</h1>
+
+
+<ChildComponent Title="This is a parameter from the parent Component"  OnClickBtnMethod="ShowMessage"  >
+     
+</ChildComponent>
+<AnotherChildComponent></AnotherChildComponent>
+
+<p><b>@messageText</b></p>
+
+@code {
+    private string messageText = "";
+
+    private void ShowMessage(MouseEventArgs e)
+    {
+        messageText = "show some mesasage";
+    }
+
+}

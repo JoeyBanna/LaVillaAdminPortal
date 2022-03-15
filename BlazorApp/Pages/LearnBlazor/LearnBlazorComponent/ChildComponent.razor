@@ -1,0 +1,26 @@
+﻿<div>
+    <div class="alert alert-info">@Title </div>
+     <div class="alert alert-success">
+    @if (ChildContent==null)
+    {
+        <span>Re-Render</span>
+    }
+    else
+    {
+     <span>@ChildContent</span>
+    }
+    </div>
+<button class="btn btn-danger" @onclick="OnClickBtnMethod">click this</button>
+</div>
+
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClickBtnMethod{ get; set; }
+}
