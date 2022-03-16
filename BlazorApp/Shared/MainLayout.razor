@@ -1,5 +1,11 @@
-﻿
+﻿@using MudBlazor
+@using System.Security.Claims
 @inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
  <MudThemeProvider/>
  <MudDialogProvider/>
  <MudSnackbarProvider/>
@@ -15,7 +21,7 @@
         
        <MudLayout>
            
-           <MudAppBar Color="Color.Info" Fixed="false"  Elevation="250">
+           <MudAppBar Color="MudBlazor.Color.Info" Fixed="false"  Elevation="250">
                <div  >
                  <a class ="nav-link text-dark" id="titlebar" href="">
 
@@ -31,7 +37,15 @@
                <MudSpacer />
                @*<LoginDisplay></LoginDisplay>*@
                <a class="nav-link text-dark" id="register" href="/Identity/Account/Register">Register</a>
-               <a class="nav-link alert-dark id="login" href="/Identity/Account/Login">Login</a>
+               <AuthorizeView>
+                   <Authorized>
+                       
+                      
+                       <a class="nav-link alert-dark id="login" href="logout">Log out</a>
+                      <h3>@UserName</h3>
+                   </Authorized>
+               </AuthorizeView>
+               
 
 
 
@@ -67,7 +81,7 @@
     {
         _drawerOpen = !_drawerOpen;
     }
-     private bool collapseNavMenu = true;
+    private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
@@ -75,7 +89,36 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+    private string _authMessage;
+    private string _surnameMessage;
+    private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
+
+    public string UserName;
+
+    protected override async Task OnInitializedAsync()
+    {
+        UserName = httpContextAccessor.HttpContext.User.Identity.Name;
+    }
+
+    private async Task GetClaimsPrincipal()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            _authMessage = user.Identity.Name;
+            _claims = user.Claims;
+            _surnameMessage = 
+                $"Surname: {user.FindFirst(c => c.Type == ClaimTypes.Surname)?.Value}";
+        }
+        else
+        {
+            _authMessage = "The user is NOT authenticated.";
+        }
+    }
     
+
     
 
 }

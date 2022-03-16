@@ -1,6 +1,28 @@
 ﻿@page "/"
-<h3>LandingPage</h3>
+@inject NavigationManager NavigationManager
+
+
+<AuthorizeView>
+    <NotAuthorized>
+        <div class="row p-0 m-0">
+    <div >
+         <img src="/Images/abstract-blur-defocused-breakfast-buffet-hotel-restaurant-coffee-shop-cafe-interior.jpg" class="img-fluid" alt="Responsive image"/>
+    </div>
+   
+    <div class=top-left1>
+        <NavLink href="login" class="btn btn-success btn-lg btn-block"> Login</NavLink>
+               
+            </div>
+</div>
+
+    </NotAuthorized>
+</AuthorizeView>
+
+
+
+
+
 
 @code {
-
+    private bool isProcessingStart = false;
 }

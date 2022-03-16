@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Logging;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -48,6 +49,7 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddMudServices();
 builder.Services.AddBlazoredLocalStorage();
+
 
 
 //

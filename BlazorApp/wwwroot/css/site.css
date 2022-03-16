@@ -134,3 +134,12 @@ a, .btn-link {
     padding: 0px 6px;
     display: inline-block
 }
+.page-background-class {
+    background-image: url(../Images/abstract-blur-defocused-breakfast-buffet-hotel-restaurant-coffee-shop-cafe-interior.jpg)
+}
+.top-left1 {
+    position: absolute;
+    top:500px;
+    left: 600px;
+    color: red;
+}

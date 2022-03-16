@@ -83,58 +83,94 @@
 
 
 
+    <MudNavMenu>
+        <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+            <nav class="flex-column">
 
-<MudNavMenu>
-    <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-        <nav class="flex-column">
-
-            <div class="nav-item px-3">
-                <MudNavLink class="nav-link" Href="/" Match="NavLinkMatch.All">
-                    <span class="oi oi-home" aria-hidden="true"></span> Home
-                </MudNavLink>
-            </div>
-            <div class="nav-item px-3">
-                <MudNavLink class="nav-link" Href="/demoHotel" Match="NavLinkMatch.Prefix">
-                    <span class="oi oi-plus" aria-hidden="true"></span> Demo Hotel
-                </MudNavLink>
-            </div>
-            <div class="nav-item px-3">
-                        <MudNavLink class="nav-link" Href="/hotel-room" Match="NavLinkMatch.Prefix">
-                            <span class="oi oi-plus" aria-hidden="true"></span> Hotel Room
+                <div class="nav-item px-3">
+                    <MudNavLink class="nav-link" Href="dashboard" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Dashboard
+                    </MudNavLink>
+                </div>
+                <AuthorizeView>
+                    <Authorized>
+                <div class="nav-item px-3 ">
+                    <MudNavGroup Title="Setups" class="nav-link text-white" @bind-Expanded=_isExpanded >
+                        <MudNavLink Href="noPage" Match="NavLinkMatch.All" class="nav-link">
+                            <i class="fas fa-users"></i>
+                           Add Users
+                            </MudNavLink>
+                        <MudNavLink Href="/noPage1" Match="NavLinkMatch.All" class="nav-link">
+                           
+                            General Setups
                         </MudNavLink>
-                    </div>
-             <div class="nav-item px-3">
-                        <MudNavLink class="nav-link" Href="/booking" Match="NavLinkMatch.Prefix">
-                            <span class="oi oi-plus" aria-hidden="true"></span> Booking Report
+                    </MudNavGroup>
+                </div>
+                <div class="nav-item px-3">
+                    <span class="iconify" data-icon="oi oi-briefcase"></span>
+                    <MudNavGroup Title="Management" class="nav-link text-white " @bind-Expanded=isExpandedManagement>
+                        <MudNavLink Href="/hotel-room" Match="NavLinkMatch.All" class="nav-link">
+                            <i class="fas fa-bed-empty"></i>
+                           Rooms
+                            </MudNavLink>
+                             <MudNavLink Href="/hotel-amenity" Match="NavLinkMatch.All" class="nav-link">
+                            <i class="fas fa-bars"></i>
+                           Amenities
+                            </MudNavLink>
+                        <MudNavLink Href="/booking" Match="NavLinkMatch.All" class="nav-link">
+                           <i class="fas fa-folder-minus"></i>
+                            Bookings
                         </MudNavLink>
-                    </div>
-            <AuthorizeView>
-                <Authorized>
+                    </MudNavGroup>
+                </div>
+                   <div class="nav-item px-3">
+                    <MudNavLink class="nav-link" Href="reports" Match="NavLinkMatch.Prefix">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Reports
+                    </MudNavLink>
+                </div>
+                @*<div class="nav-item px-3">
+                    <MudNavLink class="nav-link" Href="/demoHotel" Match="NavLinkMatch.Prefix">
+                        <span class="oi oi-plus" aria-hidden="true"></span> Demo Hotel
+                    </MudNavLink>
+                </div>
+                <div class="nav-item px-3">
+                            <MudNavLink class="nav-link" Href="/hotel-room" Match="NavLinkMatch.Prefix">
+                                <span class="oi oi-plus" aria-hidden="true"></span> Hotel Room
+                            </MudNavLink>
+                        </div>
+                 <div class="nav-item px-3">
+                            <MudNavLink class="nav-link" Href="/booking" Match="NavLinkMatch.Prefix">
+                                <span class="oi oi-plus" aria-hidden="true"></span> Booking Report
+                            </MudNavLink>
+                        </div>*@
+                
                     
-                    <div class="nav-item px-3">
-                        <MudNavLink class="nav-link" Href="hotel-amenity" Match="NavLinkMatch.Prefix">
-                            <span class="oi oi-list-rich" aria-hidden="true"></span> Hotel Amenities
-                        </MudNavLink>
-                    </div>
-                    <div class="nav-item px-3">
-                        <MudNavLink class="nav-link" href="logout">
-                            <span class="oi oi-list-rich" aria-hidden="true"></span> Logout
-                        </MudNavLink>
-                    </div>
-                </Authorized>
+                    
+                        @*<div class="nav-item px-3">
+                            <MudNavLink class="nav-link" Href="hotel-amenity" Match="NavLinkMatch.Prefix">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Hotel Amenities
+                            </MudNavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <MudNavLink class="nav-link" href="logout">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Logout
+                            </MudNavLink>
+                        </div>*@
+                    </Authorized>
 
-                <NotAuthorized>
-                    <li class="nav-item px-3">
-                        <MudNavLink class="nav-link" href="login" Match="NavLinkMatch.Prefix">
-                            <span class="oi oi-list-rich" aria-hidden="true"></span> Login
-                        </MudNavLink>
-                    </li>
-                </NotAuthorized>
-            </AuthorizeView>
-        </nav>
-    </div>
+                    @*<NotAuthorized>
+                        <li class="nav-item px-3">
+                            <MudNavLink class="nav-link" href="login" Match="NavLinkMatch.Prefix">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Login
+                            </MudNavLink>
+                        </li>
+                    </NotAuthorized>*@
+                </AuthorizeView>
+            </nav>
+        </div>
 
-</MudNavMenu>
+    </MudNavMenu>
+
 
 @* <MudNavGroup Title="Settings" Expanded="true">
     <MudNavLink Href="/users"  Match="NavLinkMatch.Prefix">Users</MudNavLink>
@@ -145,9 +181,12 @@
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    public bool _isExpanded = false;
+    public bool isExpandedManagement = false;
 
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
     }
+    
 }

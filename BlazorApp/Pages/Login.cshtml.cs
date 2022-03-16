@@ -13,7 +13,7 @@ namespace BlazorApp.Pages
             await Task.CompletedTask;
             if (string.IsNullOrWhiteSpace(redirectUri))
             {
-                redirectUri = Url.Content("~/");
+                redirectUri = Url.Content("~/dashboard");
             }
             // If user is already logged in, we can redirect directly...
             if (HttpContext.User.Identity.IsAuthenticated)
