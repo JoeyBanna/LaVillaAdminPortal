@@ -28,7 +28,8 @@
                <AuthorizeView>
                    <Authorized>
                        
-                      
+                      <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme"/>
+                      <MudSwitch @bind-Checked="@_isDarkMode" Color="Color.Primary" Class="ma-4" T="bool" Label="Toggle Light/Dark Mode"/>
                        <a class="nav-link alert-dark id="login" href="logout">Log out</a>
                       <h3>@UserName</h3>
                    </Authorized>
@@ -64,7 +65,8 @@
 
 @code{
     bool _drawerOpen = true;
-
+    private MudTheme _theme = new();
+    private bool _isDarkMode;
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;

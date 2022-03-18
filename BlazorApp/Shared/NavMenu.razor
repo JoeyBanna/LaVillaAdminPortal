@@ -96,11 +96,11 @@
                 <AuthorizeView>
                     <Authorized>
                
-                 <MudNavLink  Href="dashboard"  Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard">
+                 <MudNavLink  Href="dashboard"  Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard" Class="text-white">
                          Dashboard
                     </MudNavLink>
                 
-                    <MudNavGroup Title="Setups"  Match="NavLinkMatch.Prefix"  Icon="@Icons.Material.Outlined.AssignmentInd"  @bind-Expanded=_isExpanded >
+                    <MudNavGroup Title="Setups" Class="text-white"  Match="NavLinkMatch.Prefix"  Icon="@Icons.Material.Outlined.AssignmentInd"  @bind-Expanded=_isExpanded >
                         <MudNavLink Href="noPage" Icon="@Icons.Material.Outlined.Person" class="nav-link text-info" Match="NavLinkMatch.All">
                            Add Users
                             </MudNavLink>
@@ -110,7 +110,7 @@
                         </MudNavLink>
                     </MudNavGroup>
             
-                    <MudNavGroup Title="Management"  Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Outlined.Assignment" HideExpandIcon="false" @bind-Expanded=isExpandedManagement>
+                    <MudNavGroup Title="Management"  Class="text-white" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Outlined.Assignment" HideExpandIcon="false" @bind-Expanded=isExpandedManagement>
 
                         <MudNavLink Href="/hotel-room"  Icon="@Icons.Material.Outlined.Label" IconColor="Color.Info" Dense="true" Class="my-2 rounded nav-link text-info">
                            Rooms
@@ -126,7 +126,7 @@
                     </MudNavGroup>
                
                  
-                    <MudNavLink  Href="reports" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Outlined.Details" >
+                    <MudNavLink  Href="reports" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Outlined.Details" Class="text-white">
                         Report
                     </MudNavLink>
               
