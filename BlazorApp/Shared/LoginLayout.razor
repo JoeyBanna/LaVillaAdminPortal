@@ -1,0 +1,36 @@
+﻿@using AdminDashboard
+@inherits LayoutComponentBase
+
+
+<MudThemeProvider Theme="_currentTheme" />
+<MudSnackbarProvider />
+ <PageTitle>Login</PageTitle>
+<style>
+   
+body{
+    background-image: url("/Images/abstract-blur-defocused-breakfast-buffet-hotel-restaurant-coffee-shop-cafe-interior.jpg");
+
+}
+
+</style>
+<MudContainer MaxWidth="MaxWidth.Small" Class="d-flex align-center" Style="height: 100vh;">
+    <div class="d-flex flex-column mud-width-full">
+        <MudPaper Elevation="25" Class="pa-8" Width="100%" MaxWidth="500px" Style="background:none; box-shadow:none">
+           @* <MudImage Fluid="true" Src="/Images/abstract-blur-defocused-breakfast-buffet-hotel-restaurant-coffee-shop-cafe-interior.jpg" Alt="Swedish Farm House" Class="rounded-lg"/>*@
+         <MudButton Link="login" Class="mt-2 d-flex align-center"
+           Variant="Variant.Filled"
+           EndIcon="@Icons.Outlined.Login"
+           Color="Color.Primary"
+          >
+    Sign-In
+</MudButton>
+
+            @Body
+        </MudPaper>
+        <MudAlert Severity="Severity.Info" Class="mt-8 mud-width-full" Style="max-width:500px;" Elevation="25"> Authentication is required, click sign in.</MudAlert>
+    </div>
+</MudContainer>
+
+@code {
+    private MudTheme _currentTheme = new MudBlazorAdminDashboard();
+}

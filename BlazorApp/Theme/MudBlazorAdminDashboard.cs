@@ -1,6 +1,6 @@
 ﻿using MudBlazor;
 
-namespace AdminDashboard.Server.Theme
+namespace AdminDashboard
 {
     public class MudBlazorAdminDashboard : MudTheme
     {
@@ -120,6 +120,8 @@ namespace AdminDashboard.Server.Theme
                     LineHeight = 1.57,
                     LetterSpacing = ".00714em"
                 }
+                
+
             };
             Shadows = new Shadow();
             ZIndex = new ZIndex();

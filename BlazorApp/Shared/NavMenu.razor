@@ -82,52 +82,55 @@
     </div>*@
 
 
-
-    <MudNavMenu>
+    <MudNavMenu Rounded="true" Margin="Margin.Normal" Color="Color.Tertiary" Class="pa-2">
         <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
             <nav class="flex-column">
-
-                <div class="nav-item px-3">
-                    <MudNavLink class="nav-link" Href="dashboard" Match="NavLinkMatch.All">
-                        <span class="oi oi-home" aria-hidden="true"></span> Dashboard
-                    </MudNavLink>
+                     <div class="px-3">
+                    <a href="dashboard">
+                         <img src="/Images/logo.png"  alt="Tabler" class="navbar-brand-image me-2 imagelaVille"  width="150" height="85" >
+                    </a>
+                        
+                 
                 </div>
+                <MudDivider Class="mb-4" />
                 <AuthorizeView>
                     <Authorized>
-                <div class="nav-item px-3 ">
-                    <MudNavGroup Title="Setups" class="nav-link text-white" @bind-Expanded=_isExpanded >
-                        <MudNavLink Href="noPage" Match="NavLinkMatch.All" class="nav-link">
-                            <i class="fas fa-users"></i>
+               
+                 <MudNavLink  Href="dashboard"  Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard">
+                         Dashboard
+                    </MudNavLink>
+                
+                
+                    <MudNavGroup Title="Setups"  Match="NavLinkMatch.Prefix"  Icon="@Icons.Material.Outlined.AssignmentInd"  @bind-Expanded=_isExpanded >
+                        <MudNavLink Href="noPage" Icon="@Icons.Material.Outlined.Person" class="nav-link" Match="NavLinkMatch.All">
                            Add Users
                             </MudNavLink>
-                        <MudNavLink Href="/noPage1" Match="NavLinkMatch.All" class="nav-link">
-                           
+                             
+                        <MudNavLink Href="/noPage1" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Build" class="nav-link">
                             General Setups
                         </MudNavLink>
                     </MudNavGroup>
-                </div>
-                <div class="nav-item px-3">
-                    <span class="iconify" data-icon="oi oi-briefcase"></span>
-                    <MudNavGroup Title="Management" class="nav-link text-white " @bind-Expanded=isExpandedManagement>
-                        <MudNavLink Href="/hotel-room" Match="NavLinkMatch.All" class="nav-link">
-                            <i class="fas fa-bed-empty"></i>
+            
+                    <MudNavGroup Title="Management" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Outlined.Assignment" HideExpandIcon="false" @bind-Expanded=isExpandedManagement>
+
+                        <MudNavLink Href="/hotel-room"  Icon="@Icons.Material.Outlined.Label" IconColor="Color.Info" Dense="true" Class="my-2 rounded nav-link">
                            Rooms
                             </MudNavLink>
-                             <MudNavLink Href="/hotel-amenity" Match="NavLinkMatch.All" class="nav-link">
-                            <i class="fas fa-bars"></i>
+
+                             <MudNavLink Href="/hotel-amenity" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Label" IconColor="Color.Success" Dense="true" Class="my-2 rounded nav-link">
                            Amenities
                             </MudNavLink>
-                        <MudNavLink Href="/booking" Match="NavLinkMatch.All" class="nav-link">
-                           <i class="fas fa-folder-minus"></i>
+
+                        <MudNavLink Href="/booking" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Outlined.Label" IconColor="Color.Warning" Dense="true" Class="my-2 rounded nav-link">
                             Bookings
                         </MudNavLink>
                     </MudNavGroup>
-                </div>
-                   <div class="nav-item px-3">
-                    <MudNavLink class="nav-link" Href="reports" Match="NavLinkMatch.Prefix">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Reports
+               
+                 
+                    <MudNavLink  Href="reports" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Outlined.Details">
+                        Reports
                     </MudNavLink>
-                </div>
+              
                 @*<div class="nav-item px-3">
                     <MudNavLink class="nav-link" Href="/demoHotel" Match="NavLinkMatch.Prefix">
                         <span class="oi oi-plus" aria-hidden="true"></span> Demo Hotel
@@ -144,7 +147,7 @@
                             </MudNavLink>
                         </div>*@
                 
-                    
+             
                     
                         @*<div class="nav-item px-3">
                             <MudNavLink class="nav-link" Href="hotel-amenity" Match="NavLinkMatch.Prefix">
@@ -188,5 +191,6 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+     string AlertAssignmentIcon { get; set; } = "<path d=\"M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1 5,3H9.18C9.6,1.84 10.7,1 12,1C13.3,1 14.4,1.84 14.82,3H19M12,3A1,1 0 0,0 11,4A1,1 0 0,0 12,5A1,1 0 0,0 13,4A1,1 0 0,0 12,3M7,7V5H5V19H19V5H17V7H7M11,9H13V13.5H11V9M11,15H13V17H11V15Z\" />";
     
 }

@@ -23,7 +23,7 @@
 @inject IHttpClientFactory Factory
 @inject TokenProvider TokenProvider
 
-
+<PageTitle> Hotel Room</PageTitle>
 <div class="row mt-4">
     <div class="col-8">
         <h4 class="card-title text-info "> Hotel Room's</h4>
@@ -145,7 +145,7 @@
         {
             HotelRoomDT hotelRoom = await _hotelRoomService.GetHotelRoomById(DeleteRoomId);
             foreach (var image in hotelRoom.HotelRoomImages)
-            {
+            { 
                 if(image.roomImage != null)
                 {
                     await _hotelRoomService.DeleteHotelRoom(DeleteRoomId);
@@ -165,6 +165,7 @@
 
             
         }
+        await _hotelRoomService.DeleteHotelRoom(DeleteRoomId);
       await JSruntime.InvokeVoidAsync("HideDeleteConfirmationModal");
         IsProcessing = false;
     }
