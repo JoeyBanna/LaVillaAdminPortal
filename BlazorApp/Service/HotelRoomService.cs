@@ -98,7 +98,7 @@ namespace BlazorApp.Service
         {
             try
             {
-                var url = "https://psl-app-vm3/HotelAdminAPI/api/HotelRooms/" + hotelRoomId;
+                var url = "https://psl-app-vm3/HotelAdminAPI/api/HotelRooms/UpdateHotelRoom/" + hotelRoomId;
                 var json = JsonConvert.SerializeObject(hotelRoomDTO);
                 var data = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await _httpClient.PutAsync(url, data);
