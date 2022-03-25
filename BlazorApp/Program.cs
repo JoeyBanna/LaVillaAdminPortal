@@ -15,7 +15,8 @@ using MudBlazor.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Logging;
-
+using BlazorApp.Hubs;
+using MudBlazor;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,7 @@ builder.Services.AddScoped<IHotelAmenityService, HotelAmenityService>();
 builder.Services.AddScoped<IHotelRoomImagesRepository, HotelImagesRepository>();
 builder.Services.AddScoped<IHotelAmenityRepository, HotelAmenityRepository>();
 builder.Services.AddScoped<ICustomerBookingService, CustomerBookingService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 builder.Services.AddScoped<TokenProvider>();
 builder.Services.AddHttpClient("HAIDP", client =>
@@ -49,6 +51,8 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddMudServices();
 builder.Services.AddBlazoredLocalStorage();
+
+builder.Services.AddMudServices(c => { c.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight; });
 
 
 
@@ -109,6 +113,7 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapBlazorHub();
     endpoints.MapFallbackToPage("/_Host");
+   
 });
 //app.MapBlazorHub();
 app.MapRazorPages();

@@ -1,0 +1,116 @@
+﻿@page "/notificationpage"
+@using BlazorApp.ModelsModels
+
+@inject BlazorApp.Service.IService.INotificationService notification
+
+@*<div class="row mt-4">
+    <div class="col-8">
+        <h4 class="card-title text-info ">Notifications</h4>
+    </div>
+ 
+</div>
+<div class="row mt-4">
+    <div class="col-12">
+        <table class="table table-bordered table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Message</th>
+                   
+
+                </tr>
+            </thead>
+            <tbody>
+                @if (notify.Any())
+                {
+                    foreach(var msg in notify)
+                    {
+                        <tr>
+                       
+                        <td>@msg.title</td>
+                        <td>@msg.message</td>
+                 *@     
+                       
+                       @* <td>
+                            <NavLink href="@($"hotel-room/edit/{rooms.id}")" class="btn btn-primary">Edit</NavLink>  
+                            <button class="btn btn-danger btn" @onclick="()=>HandleDelete(rooms.id)">Delete</button>
+                        </td>*@
+            @*            </tr>
+                    }
+                        
+                        
+
+                }
+                else
+                {*@
+                   @* <div class="spinner"></div>*@
+                    @*//<tr colspan>No records found</tr>*@
+ @*               }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+*@
+@using System.Net.Http.Json
+
+@inject HttpClient httpClient
+
+<MudTable Items="@notify" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<Notifications,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Booking Notification</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Title</MudTh>
+        <MudTh>Message</MudTh>
+  
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.title</MudTd>
+        <MudTd DataLabel="Sign">@context.message</MudTd>
+     
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+
+
+@code {
+    private IEnumerable<Notifications> notify { get; set; } = new List <Notifications>();
+
+    bool fixed_header = true;
+    bool fixed_footer = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        notify = await notification.getNotification();
+    }
+
+
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = true;
+    private bool bordered = true;
+    private string searchString1 = "";
+    private Notifications selectedItem1;
+
+      private bool FilterFunc1(Notifications element) => FilterFunc(element, searchString1);
+
+    private bool FilterFunc(Notifications element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.message.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.title.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+
+}

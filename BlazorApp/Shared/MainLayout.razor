@@ -1,10 +1,13 @@
-﻿@using MudBlazor
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@using MudBlazor
 @using System.Security.Claims
+@inject NavigationManager _navigationManager
 @inherits LayoutComponentBase
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor httpContextAccessor
 @using Microsoft.AspNetCore.Components.Authorization
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ISnackbar _snackBar
 
  <MudThemeProvider/>
  <MudDialogProvider/>
@@ -49,12 +52,15 @@
            @*<MudDrawer @bind-Open="@_drawerOpen">
                <MyNavMenu/>
            </MudDrawer>*@
-           <MudMainContent>
+           <CascadingValue Value="hubConnection">
+                      <MudMainContent >
                <MudContainer MaxWidth="MaxWidth.Large">
                     @Body
                </MudContainer>
                
            </MudMainContent>
+           </CascadingValue>
+    
        </MudLayout>
        @* <article class="content px-4">
            
@@ -82,14 +88,55 @@
     private string _authMessage;
     private string _surnameMessage;
     private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
+    private HubConnection hubConnection;
+    public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
 
     public string UserName;
-
+    public bool isConnected => hubConnection.State == HubConnectionState.Connected;
     protected override async Task OnInitializedAsync()
     {
         UserName = httpContextAccessor.HttpContext.User.Identity.Name;
-    }
 
+
+        //hubConnection = new HubConnectionBuilder().WithUrl(_navigationManager.ToAbsoluteUri("/notify")).Build();
+
+       // await hubConnection.StartAsync();
+      
+       
+       // await this.hubConnection.StartAsync();
+
+        //await hubConnection.InvokeAsync("JoinBookingCreatedNotificationGroup");
+        //await hubConnection.InvokeAsync("JoinBookingCreatedNotificationGroup");
+
+        //hubConnection.On<string>("BookingCreatedNotify",(message) =>
+        //{
+
+        //    _snackBar.Add(message, Severity.Info, config =>
+        //{
+        //    config.VisibleStateDuration = 10000;
+        //    config.HideTransitionDuration = 500;
+        //    config.ShowTransitionDuration = 500;
+        //    config.Action = "Check Message";
+        //    config.ActionColor = Color.Info;
+        //    config.Onclick = snackbar =>
+        //{
+        //    _navigationManager.NavigateTo($"notificationpage");
+        //    return Task.CompletedTask;
+        //};
+        //});
+        //    StateHasChanged();
+
+        //});
+        
+        //hubConnection.Closed += async (error) =>
+        //{
+        //    await Task.Delay(new Random().Next(0,5) * 1000);
+        //    await hubConnection.StartAsync();
+        //};
+       // await hubConnection.StartAsync();
+    }
+   
+     
     private async Task GetClaimsPrincipal()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -107,6 +154,8 @@
             _authMessage = "The user is NOT authenticated.";
         }
     }
+  
+  
     
 
     
