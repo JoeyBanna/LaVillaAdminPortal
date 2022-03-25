@@ -84,10 +84,9 @@
 
 
 
-
     protected override async Task OnInitializedAsync()
     {
-        //await notification.Updatenotifications(notify);
+       var response = await notification.Updatenotifications(Id, notify);
         customerBooking = await customeerBookingService.GetBooking(Id);
     }
 

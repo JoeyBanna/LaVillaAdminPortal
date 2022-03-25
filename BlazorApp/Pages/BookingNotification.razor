@@ -18,9 +18,9 @@
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Nr">@context.title</MudTd>
-        <a  href="@($"booking-Id/{bookingID}")">
+        <NavLink  href="@($"booking-Id/{context.hotelBookingId}")">
             <MudTd DataLabel="Sign">@context.message</MudTd>
-        </a>
+        </NavLink>
         
      
     </RowTemplate>
@@ -32,8 +32,10 @@
 
 
 @code {
+     [Parameter]
     public string? bookingID{ get; set; }
     private IEnumerable<Notifications> notify { get; set; } = new List <Notifications>();
+     private Notifications notifiable { get; set; } = new Notifications();
 
     bool fixed_header = true;
     bool fixed_footer = false;

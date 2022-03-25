@@ -9,6 +9,7 @@ namespace BlazorApp.ModelsModels
     public class Notifications
     {
         public string id { get; set; }
+        public string hotelBookingId { get; set; }
         public string title { get; set; }
         public string message { get; set; }
         public string recipient { get; set; }
@@ -19,6 +20,7 @@ namespace BlazorApp.ModelsModels
     public class Notifica
     {
         public string id { get; set; }
+        public string hotelBookingId { get; set; }
         public string title { get; set; }
         public string message { get; set; }
         public string recipient { get; set; }
