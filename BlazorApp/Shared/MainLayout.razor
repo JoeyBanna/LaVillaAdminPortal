@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.SignalR.Client
+﻿@using BlazorApp.ModelsModels
+@using Microsoft.AspNetCore.SignalR.Client
 @using MudBlazor
 @using System.Security.Claims
 @inject NavigationManager _navigationManager
@@ -8,6 +9,7 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ISnackbar _snackBar
+@inject BlazorApp.Service.IService.INotificationService notification
 
  <MudThemeProvider/>
  <MudDialogProvider/>
@@ -23,10 +25,33 @@
     <main>
         
        <MudLayout>
-           
+          @* Cross Bar*@  
+
            <MudAppBar Color="MudBlazor.Color.Primary" Fixed="false"  Elevation="0">
+
+             @*  Add badge*@ 
+
                <MudSpacer />
-               @*<LoginDisplay></LoginDisplay>*@
+                    <div Class="d-flex justify-space-around flex-wrap " style = "margin-top: 1px !important;" >
+                    @{
+                      var unreadCount =  notify.Where(x => x.readStatus == false).Count();
+                    }
+                        @foreach( var item in notify)
+                        {
+                        @*var useage = item.readStatus;
+                            arr.Add(useage);
+                        serial = arr.Count(v => v == false);*@
+                        serial = notify.Count();
+
+                        }
+                        <a href="notificationpage">
+                              <MudBadge Content="@unreadCount" Overlap="true" Class="mx-6 my-4" Color="Color.Warning" >
+                            <MudIcon Icon="@Icons.Material.Filled.Email" Color="Color.Default"  />
+                        </MudBadge> 
+                        </a>
+                       
+                   
+                    </div>
                <a class="nav-link text-dark" id="register" href="/Identity/Account/Register">Register</a>
                <AuthorizeView>
                    <Authorized>
@@ -38,33 +63,17 @@
                    </Authorized>
                </AuthorizeView>
                
-
-
-
-               @*<MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" />*@
-                @*<div class="top-row px-4">
-            <LoginDisplay /> 
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-            
-        </div>*@
             </MudAppBar>
-     
-           @*<MudDrawer @bind-Open="@_drawerOpen">
-               <MyNavMenu/>
-           </MudDrawer>*@
-           <CascadingValue Value="hubConnection">
+          
                       <MudMainContent >
                <MudContainer MaxWidth="MaxWidth.Large">
                     @Body
                </MudContainer>
                
            </MudMainContent>
-           </CascadingValue>
+    
     
        </MudLayout>
-       @* <article class="content px-4">
-           
-        </article>*@
     </main>
 </div>
 
@@ -73,12 +82,16 @@
     bool _drawerOpen = true;
     private MudTheme _theme = new();
     private bool _isDarkMode;
+    private IEnumerable<Notifications> notify { get; set; } = new List <Notifications>();
+    private int serial { get; set; }
+    private List<bool> arr { get; set; } = new List<bool>();
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
     }
     private bool collapseNavMenu = true;
 
+    //Navbar toggle
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu()
@@ -88,52 +101,13 @@
     private string _authMessage;
     private string _surnameMessage;
     private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
-    private HubConnection hubConnection;
-    public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
-
     public string UserName;
-    public bool isConnected => hubConnection.State == HubConnectionState.Connected;
+
     protected override async Task OnInitializedAsync()
     {
         UserName = httpContextAccessor.HttpContext.User.Identity.Name;
-
-
-        //hubConnection = new HubConnectionBuilder().WithUrl(_navigationManager.ToAbsoluteUri("/notify")).Build();
-
-       // await hubConnection.StartAsync();
+         notify = await notification.getNotification();
       
-       
-       // await this.hubConnection.StartAsync();
-
-        //await hubConnection.InvokeAsync("JoinBookingCreatedNotificationGroup");
-        //await hubConnection.InvokeAsync("JoinBookingCreatedNotificationGroup");
-
-        //hubConnection.On<string>("BookingCreatedNotify",(message) =>
-        //{
-
-        //    _snackBar.Add(message, Severity.Info, config =>
-        //{
-        //    config.VisibleStateDuration = 10000;
-        //    config.HideTransitionDuration = 500;
-        //    config.ShowTransitionDuration = 500;
-        //    config.Action = "Check Message";
-        //    config.ActionColor = Color.Info;
-        //    config.Onclick = snackbar =>
-        //{
-        //    _navigationManager.NavigateTo($"notificationpage");
-        //    return Task.CompletedTask;
-        //};
-        //});
-        //    StateHasChanged();
-
-        //});
-        
-        //hubConnection.Closed += async (error) =>
-        //{
-        //    await Task.Delay(new Random().Next(0,5) * 1000);
-        //    await hubConnection.StartAsync();
-        //};
-       // await hubConnection.StartAsync();
     }
    
      

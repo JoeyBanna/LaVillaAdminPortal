@@ -1,58 +1,6 @@
 ﻿@page "/notificationpage"
 @using BlazorApp.ModelsModels
-
 @inject BlazorApp.Service.IService.INotificationService notification
-
-@*<div class="row mt-4">
-    <div class="col-8">
-        <h4 class="card-title text-info ">Notifications</h4>
-    </div>
- 
-</div>
-<div class="row mt-4">
-    <div class="col-12">
-        <table class="table table-bordered table">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Message</th>
-                   
-
-                </tr>
-            </thead>
-            <tbody>
-                @if (notify.Any())
-                {
-                    foreach(var msg in notify)
-                    {
-                        <tr>
-                       
-                        <td>@msg.title</td>
-                        <td>@msg.message</td>
-                 *@     
-                       
-                       @* <td>
-                            <NavLink href="@($"hotel-room/edit/{rooms.id}")" class="btn btn-primary">Edit</NavLink>  
-                            <button class="btn btn-danger btn" @onclick="()=>HandleDelete(rooms.id)">Delete</button>
-                        </td>*@
-            @*            </tr>
-                    }
-                        
-                        
-
-                }
-                else
-                {*@
-                   @* <div class="spinner"></div>*@
-                    @*//<tr colspan>No records found</tr>*@
- @*               }
-            </tbody>
-        </table>
-
-    </div>
-</div>
-
-*@
 @using System.Net.Http.Json
 
 @inject HttpClient httpClient
@@ -70,7 +18,10 @@
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Nr">@context.title</MudTd>
-        <MudTd DataLabel="Sign">@context.message</MudTd>
+        <a  href="@($"booking-Id/{bookingID}")">
+            <MudTd DataLabel="Sign">@context.message</MudTd>
+        </a>
+        
      
     </RowTemplate>
     <PagerContent>
@@ -81,6 +32,7 @@
 
 
 @code {
+    public string? bookingID{ get; set; }
     private IEnumerable<Notifications> notify { get; set; } = new List <Notifications>();
 
     bool fixed_header = true;

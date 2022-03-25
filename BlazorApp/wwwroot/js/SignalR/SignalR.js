@@ -59,7 +59,7 @@
     
     payconnection.on("BookingCreatedNotify", (message) => {
         console.log("BookingCreatedNotify", { message });
-        Command: toastr["info"](message, "Booking Notification")
+        Command: toastr["info"](message.message, "Booking Notification")
 
         toastr.options = {
             "closeButton": true,

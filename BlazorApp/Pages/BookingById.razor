@@ -1,9 +1,11 @@
 ﻿@page "/booking-Id/{Id}"
 @using BlazorApp.Models
+@using BlazorApp.ModelsModels
 @inject Service.IService.ICustomerBookingService customeerBookingService
 @inject IJSRuntime JSruntime
 @inject Service.IService.ICustomerBookingService customerBookingServ
 @inject NavigationManager NavigationManager
+@inject Service.IService.INotificationService notification
 
 <div class="row mt-3 mb-2">
     <h3 class="card-title text-info mb-3 ml-3"> </h3>
@@ -78,11 +80,14 @@
     public string DeleteBookingId{ get; set; }
     private bool IsProcessing { get; set; } = false;
     private IEnumerable<CustomerBooking> customerBookings { get; set; } = new List<CustomerBooking>();
+    private Notifications notify { get; set; } = new Notifications();
+
 
 
 
     protected override async Task OnInitializedAsync()
     {
+        //await notification.Updatenotifications(notify);
         customerBooking = await customeerBookingService.GetBooking(Id);
     }
 

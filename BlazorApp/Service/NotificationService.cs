@@ -2,6 +2,7 @@
 using BlazorApp.Service.IService;
 using Models;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace BlazorApp.Service
 {
@@ -12,6 +13,23 @@ namespace BlazorApp.Service
         public NotificationService(HttpClient httpClient)
         {
             _httpClient=httpClient;
+        }
+
+        public async Task<Notifications> Updatenotifications(string Id ,Notifications notifications)
+        {
+            var url = "https://psl-app-vm3/HotelAdminAPI/api/Notifications/" + Id;
+            var json = JsonConvert.SerializeObject(notifications);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync(url, data);
+            var content = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                var hotelroom = JsonConvert.DeserializeObject<Notifications>(content);
+                
+            }
+            return JsonConvert.DeserializeObject<Notifications>(json);
+
+
         }
 
         public async Task<IEnumerable<Notifications>> getNotification()
@@ -34,5 +52,26 @@ namespace BlazorApp.Service
                 throw;
             }
         }
+        public async Task<IEnumerable<Notifica>> getNotificationsBadge()
+        {
+            try
+            {
+                var url = "https://psl-app-vm3/HotelAdminAPI/api/Notifications";
+                var response = await _httpClient.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var hotelrooms = JsonConvert.DeserializeObject<IEnumerable<Notifica>>(content);
+                    return hotelrooms;
+                }
+                return new List<Notifica>();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
     }
 }
