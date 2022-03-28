@@ -1,4 +1,5 @@
-﻿using BlazorApp.ModelsModels;
+﻿using BlazorApp.Models;
+using BlazorApp.ModelsModels;
 using BlazorApp.Service.IService;
 using Models;
 using Newtonsoft.Json;
@@ -15,19 +16,19 @@ namespace BlazorApp.Service
             _httpClient=httpClient;
         }
 
-        public async Task<Notifications> Updatenotifications(string Id ,Notifications notifications)
+        public async Task<NotificationReadResponse> Updatenotifications(string Id, NotificationReadResponse notifications)
         {
-            var url = "https://psl-app-vm3/HotelAdminAPI/api/Notifications/" + Id;
+            var url = "https://psl-app-vm3/HotelAdminAPI/api/Notifications/updateNotification/" + Id;
             var json = JsonConvert.SerializeObject(notifications);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync(url, data);
             var content = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
-                var hotelroom = JsonConvert.DeserializeObject<Notifications>(content);
+                var hotelroom = JsonConvert.DeserializeObject<NotificationReadResponse>(content);
                 
             }
-            return JsonConvert.DeserializeObject<Notifications>(json);
+            return JsonConvert.DeserializeObject<NotificationReadResponse>(json);
 
 
         }

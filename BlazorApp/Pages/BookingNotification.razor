@@ -1,4 +1,6 @@
 ﻿@page "/notificationpage"
+
+@using BlazorApp.Models
 @using BlazorApp.ModelsModels
 @inject BlazorApp.Service.IService.INotificationService notification
 @using System.Net.Http.Json
@@ -18,11 +20,10 @@
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Nr">@context.title</MudTd>
-        <NavLink  href="@($"booking-Id/{context.hotelBookingId}")">
+        <NavLink  href="@($"booking-Id/{context.hotelBookingId}/{context.id}")" >
             <MudTd DataLabel="Sign">@context.message</MudTd>
         </NavLink>
-        
-     
+
     </RowTemplate>
     <PagerContent>
         <MudTablePager />
@@ -32,20 +33,28 @@
 
 
 @code {
-     [Parameter]
-    public string? bookingID{ get; set; }
+    [Parameter]
+    public string? Id{ get; set; }
     private IEnumerable<Notifications> notify { get; set; } = new List <Notifications>();
-     private Notifications notifiable { get; set; } = new Notifications();
-
+    private Notifications notifiable { get; set; } = new Notifications();
+    private NotificationReadResponse notificationReadResponse { get; set; } = new NotificationReadResponse();
+ 
     bool fixed_header = true;
     bool fixed_footer = false;
 
 
     protected override async Task OnInitializedAsync()
     {
+        
         notify = await notification.getNotification();
+        
+        
     }
-
+    //public async Task handleNotifyUpdate()
+    //{
+        
+    //    await notification.Updatenotifications(Id, notificationReadResponse);
+    //}
 
     private bool dense = false;
     private bool hover = true;
@@ -66,5 +75,5 @@
             return true;
         return false;
     }
-
+    
 }

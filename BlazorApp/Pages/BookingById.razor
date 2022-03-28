@@ -1,6 +1,8 @@
-﻿@page "/booking-Id/{Id}"
+﻿@page "/booking-Id/{Id}/{notifyu}"
+
 @using BlazorApp.Models
 @using BlazorApp.ModelsModels
+@using Models
 @inject Service.IService.ICustomerBookingService customeerBookingService
 @inject IJSRuntime JSruntime
 @inject Service.IService.ICustomerBookingService customerBookingServ
@@ -76,17 +78,22 @@
 @code {
     [Parameter]
     public string? Id{ get; set; }
+    [Parameter]
+    public string notifyu{ get; set; }
+
     private CustomerBooking customerBooking { get; set; } = new CustomerBooking();
     public string DeleteBookingId{ get; set; }
     private bool IsProcessing { get; set; } = false;
     private IEnumerable<CustomerBooking> customerBookings { get; set; } = new List<CustomerBooking>();
     private Notifications notify { get; set; } = new Notifications();
+    private NotificationReadResponse notificationReadResponse { set; get; } = new NotificationReadResponse();
+
 
 
 
     protected override async Task OnInitializedAsync()
     {
-       var response = await notification.Updatenotifications(Id, notify);
+         await notification.Updatenotifications(notifyu, notificationReadResponse);
         customerBooking = await customeerBookingService.GetBooking(Id);
     }
 
