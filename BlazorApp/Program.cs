@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Logging;
 using BlazorApp.Hubs;
 using MudBlazor;
+using BlazorApp.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +38,10 @@ builder.Services.AddScoped<IHotelRoomImagesRepository, HotelImagesRepository>();
 builder.Services.AddScoped<IHotelAmenityRepository, HotelAmenityRepository>();
 builder.Services.AddScoped<ICustomerBookingService, CustomerBookingService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
-
+builder.Services.AddSingleton<MyBackGroundService>();
+builder.Services.AddHostedService(provider => provider.GetService<MyBackGroundService>());
+builder.Services.AddHostedService<ScopedBackgroundService>();
+builder.Services.AddScoped<IScopedProcessingService, DefaultScopedProcessingService>();
 builder.Services.AddScoped<TokenProvider>();
 builder.Services.AddHttpClient("HAIDP", client =>
 {

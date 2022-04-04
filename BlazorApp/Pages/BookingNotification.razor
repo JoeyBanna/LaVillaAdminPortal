@@ -38,18 +38,30 @@
     private IEnumerable<Notifications> notify { get; set; } = new List <Notifications>();
     private Notifications notifiable { get; set; } = new Notifications();
     private NotificationReadResponse notificationReadResponse { get; set; } = new NotificationReadResponse();
- 
+    private int countdown = 1000;
     bool fixed_header = true;
     bool fixed_footer = false;
 
 
     protected override async Task OnInitializedAsync()
     {
-        
         notify = await notification.getNotification();
-        
-        
     }
+    
+    //protected override void OnInitialized()
+    //{
+    //    base.OnInitialized();
+
+    //    Task.Run(async() =>
+    //    {
+    //        while (countdown > 0)
+    //        {
+    //            countdown--;
+    //            StateHasChanged();
+    //            await Task.Delay(1000);
+    //        }
+    //    });
+    //}
     //public async Task handleNotifyUpdate()
     //{
         

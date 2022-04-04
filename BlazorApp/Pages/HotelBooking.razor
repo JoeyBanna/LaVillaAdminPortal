@@ -19,8 +19,8 @@
 
 
 <PageTitle>Booking Report</PageTitle>
-<h1> View Booking </h1>
-<div class="row mt-4">
+
+@*<div class="row mt-4">
     <div class="col-12">
         <table class="table table-bordered table">
             <thead>
@@ -62,12 +62,52 @@
                 else
                 {
                     <div class="spinner"></div>
-                    @*<tr colspan>No records found</tr>*@
+                   
                 }
             </tbody>
         </table>
     </div>
-</div>
+</div>*@
+<MudTable Items="@customerBookings" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<CustomerBooking,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Bookings</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Customer Name</MudTh>
+        <MudTh>Mobile</MudTh>
+        <MudTh>Check In Date</MudTh>
+        <MudTh>Days Booked</MudTh>
+        <MudTh>CheckOut</MudTh>
+        <MudTh>Paid Amount</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        @if (customerBookings.Any())
+        {
+             <MudTd DataLabel="Customer Name">@context.customerName</MudTd>
+        <MudTd DataLabel="Mobile">@context.customerMobile</MudTd>
+        <MudTd DataLabel="Check In Date">@context.checkInDate</MudTd>
+        <MudTd DataLabel="Days Booked">@context.daysBooked</MudTd>
+        <MudTd DataLabel="CheckOut">@context.isCheckedOut</MudTd>
+        <MudTd DataLabel="Paid Amount">@context.amountPaid</MudTd>
+         <MudTd DataLabel="button">
+               <NavLink href="@($"booking-Id/{context.id}")" class="btn btn-primary">View</NavLink> 
+                            
+            </MudTd>
+        }
+        else
+        {
+             <div class="spinner"></div>
+            
+        }
+
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
 
 
 
@@ -78,10 +118,19 @@
     private string? DeleteBookingId { get; set; } = null;
     private bool IsProcessing { get; set; } = false;
     public string customerID { get; set; }
-
-     private string _authMessage;
+    private string _authMessage;
     private string _surnameMessage;
     private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
+
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = true;
+    private bool bordered = true;
+    private string searchString1 = "";
+    private CustomerBooking selectedItem1;
+
+
+
 
     private async Task GetClaimsPrincipalData()
     {
@@ -106,7 +155,20 @@
 
         customerBookings = await customerBookingServ.getAllBooking();
     }
+    private bool FilterFunc1(CustomerBooking element) => FilterFunc(element, searchString1);
 
+    private bool FilterFunc(CustomerBooking element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.customerName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.customerMobile.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{element.amountPaid} {element.checkInDate} {element.daysBooked}".Contains(searchString))
+            return true;
+        return false;
+    }
 
     //private async Task HandleDelete(string bookingId)
     //{

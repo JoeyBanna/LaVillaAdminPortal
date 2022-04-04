@@ -16,6 +16,7 @@ namespace BlazorApp.Models
         public int regularRate { get; set; }
         public string details { get; set; }
         public string sqFt { get; set; }
+        public string roomTypeId { get; set; }
         public List<HotelRoomImage> hotelRoomImages { get; set; } = new List<HotelRoomImage>();
     }
     public class UpdateHotelRoomModel

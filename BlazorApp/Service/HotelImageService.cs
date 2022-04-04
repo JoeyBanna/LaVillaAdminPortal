@@ -38,7 +38,8 @@ namespace BlazorApp.Service
 
         public async Task<HotelRoomImageDT> DeleteHotelImageByImageURL(string imageName)
         {
-            var response = await _httpClient.DeleteAsync("https://psl-app-vm3/HotelAdminAPI/api/HotelRoomImages/{hotelImageName}");
+            var url = "https://psl-app-vm3/HotelAdminAPI/api/HotelRoomImages/" + imageName;
+            var response = await _httpClient.DeleteAsync(url);
             var content = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
@@ -50,7 +51,8 @@ namespace BlazorApp.Service
 
         public async Task<HotelRoomImageDT> DeleteHotelRoomImageID(string imageId)
         {
-            var response = await _httpClient.DeleteAsync("https://psl-app-vm3/HotelAdminAPI/api/HotelRoomImages/{hotelRoomImageId}");
+            var url = "https://psl-app-vm3/HotelAdminAPI/api/HotelRoomImages/" + imageId;
+            var response = await _httpClient.DeleteAsync(url);
             var content = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {

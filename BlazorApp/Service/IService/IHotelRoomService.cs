@@ -11,5 +11,6 @@ namespace BlazorApp.Service
         public Task<HotelRoomDT> CreateHotelRoom(HotelRoomDT hotelRoomDTO);
         public Task<HotelRoomDT> CreateHotelRoomModel(CreateHotelRoomModel hotelRoomDTO);
         public Task<HotelRoomDT> UpdateHotelRoom(string roomId, CreateHotelRoomModel hotelRoomDTO);
+        public Task<IEnumerable<RoomTypes>> GetRoomTypes();
     }
 }

@@ -23,7 +23,9 @@
     </div>
 
     <main>
-        
+        <span>
+             
+        </span>
        <MudLayout>
           @* Cross Bar*@  
 
@@ -52,7 +54,7 @@
                        
                    
                     </div>
-               <a class="nav-link text-dark" id="register" href="/Identity/Account/Register">Register</a>
+               
                <AuthorizeView>
                    <Authorized>
                        
@@ -84,7 +86,9 @@
     private bool _isDarkMode;
     private IEnumerable<Notifications> notify { get; set; } = new List <Notifications>();
     private int serial { get; set; }
-    private List<bool> arr { get; set; } = new List<bool>();
+    private MyBackGroundService backGroundService;
+
+    private int countdown = 1000;
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
@@ -103,13 +107,14 @@
     private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
     public string UserName;
 
+
     protected override async Task OnInitializedAsync()
     {
         UserName = httpContextAccessor.HttpContext.User.Identity.Name;
-         notify = await notification.getNotification();
-      
+        notify = await notification.getNotification();
+        
     }
-   
+    
      
     private async Task GetClaimsPrincipal()
     {

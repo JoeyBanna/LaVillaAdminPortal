@@ -30,11 +30,39 @@
                         <InputText @bind-Value="createHotelRoomModel.name" class="form-control"></InputText>
                         <ValidationMessage For="()=>createHotelRoomModel.name"></ValidationMessage>
                     </div>
+                   @* @if(Title == "Update")
+                    {
+                         <div class="form-group mt-4 ">
+                    <label for ="roomtype" class="col-sm-3">Room Types</label>
+                    <InputSelect id="roomtype" @bind-Value="roomTypes" class="form-control">
+                                @foreach(var item in roomTypes)
+                                {
+                                    string vol = item.name;
+                                   <option value=@item.id>@item.name</option>
+                                }
+                    </InputSelect>
+                  
+                </div>
+                    }*@
                     <div class="form-group">
                         <label>Occupancy</label>
                         <InputNumber @bind-Value="createHotelRoomModel.occupancy" class="form-control"></InputNumber>
                         <ValidationMessage For="()=>createHotelRoomModel.occupancy"></ValidationMessage>
+                    </div> 
+                    @if(Title == "Update")
+                    {
+                         <div class="form-group">
+                       <MudSelect T="string" Label="Room Types" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Clearable="true" Required="true">
+                            @foreach(var item in roomTypes)
+                                {
+                                <MudSelectItem Value="@item.name" />
+                                roomTypeId =item.id;
+                            }
+                          
+                        </MudSelect>
                     </div>
+                    }
+                   
                     <div class="form-group">
                         <label>Rate</label>
                         <InputNumber @bind-Value="createHotelRoomModel.regularRate" class="form-control"></InputNumber>
@@ -98,7 +126,8 @@
 
                             }
                             @if ( HotelRoomModel.ImageUrls != null && createHotelRoomModel.hotelRoomImages.Count > 0)
-                                {
+                                
+                           {
                                     int serial = 1;
                                     foreach (var roomImage in HotelRoomModel.ImageUrls)
                                     {
@@ -110,65 +139,62 @@
                                                  
                                                 </div>
                                                
-                                            
                                                 <button type="button" @onclick="()=>DeletePhoto(roomImage)" class="btn btn-outline-danger btn-block mt-4">
                                                     Delete
                                               </button>
-                                        </div>
-                                        
-                                    }
-                                    else
-                                    {
-                                       @* System.IO.FileInfo fileInfo = new System.IO.FileInfo(roomImage);
-                                        if(fileInfo.Extension.ToLower() != ".jpg" || fileInfo.Extension.ToLower() != ".png" || fileInfo.Extension.ToLower() != ".jpeg")
-                                            {*@
-                                        if(Title == "Update")
-                                        {
-                                             System.IO.FileInfo fileInfo = new System.IO.FileInfo(roomImage);
-                                                if (fileInfo.Extension.ToLower() != ".jpg" || fileInfo.Extension.ToLower() != ".png" || fileInfo.Extension.ToLower() != ".jpeg")
-                                                {
-                                                    <div class="col-md-2 mt-3">
-                                                <div class="room-image" style="background: url('@roomImage') 50% 50%; ">
-                                                    <span class="room-image-tittle">@serial</span>
                                                 </div>
-                                                <button type="button" @onclick="()=>DeletePhoto(roomImage)" class="btn btn-outline-danger btn-block mt-4">
-                                                    Delete
-                                                </button>
-                                            </div>
-                                            serial++;
-
-                                                }
-                                           
                                         }
                                         else
                                         {
-                                              foreach(var room in HotelRoomModel.ImageUrls)
-                                            {
-                                                 System.IO.FileInfo fileInfo = new System.IO.FileInfo(room);
-                                                if (fileInfo.Extension.ToLower() == ".jpg" || fileInfo.Extension.ToLower() == ".png" || fileInfo.Extension.ToLower() == ".jpeg")
+                                              @* System.IO.FileInfo fileInfo = new System.IO.FileInfo(roomImage);
+                                                if(fileInfo.Extension.ToLower() != ".jpg" || fileInfo.Extension.ToLower() != ".png" || fileInfo.Extension.ToLower() != ".jpeg")
+                                                    {*@ 
+                                                if( roomImage.Equals(pathForImage) && Title == "Update"   )
                                                 {
-                                                     string base64String = Base64Converter.ConvertImageURLToBase64(room);
-                                                    <div class="col-md-2 mt-3">
-                                                        <div>
-                                                             <img src="data:image/jpg;base64,@base64String" style="background-image" width="170" height="150" >
+                                             
+                                                            <div class="col-md-2 mt-3">
+                                                                <div>
+                                                                     <img src="data:image/jpg;base64,@roomImage" style="background-image" width="170" height="150" >
                                                  
-                                                        </div>
+                                                                </div>
                                                
-                                                        <button type="button" @onclick="()=>DeletePhoto(room)" class="btn btn-outline-danger btn-block mt-4">
-                                                            Delete
-                                                      </button>
-                                                    </div>
+                                                                <button type="button" @onclick="()=>DeletePhoto(roomImage)" class="btn btn-outline-danger btn-block mt-4">
+                                                                    Delete
+                                                              </button>
+                                            </div>
 
-                                                }
+                                        }
+                                        else
 
+                                        {
+
+                                            if (!HotelRoomModel.ImageUrls.Equals(pathForImage) && Title == "Update"   )
+                                            {
+                                                
+                                                                System.IO.FileInfo fileInfo = new System.IO.FileInfo(roomImage);
+                                                                if (fileInfo.Extension.ToLower() != ".jpg" || fileInfo.Extension.ToLower() != ".png" || fileInfo.Extension.ToLower() != ".jpeg")
+                                                                {
+                                                                        <div class="col-md-2 mt-3">
+                                                                    <div class="room-image" style="background: url('@roomImage') 50% 50%; ">
+                                                                        <span class="room-image-tittle">@serial</span>
+                                                                    </div>
+                                                                    <button type="button" @onclick="()=>DeletePhoto(roomImage)" class="btn btn-outline-danger btn-block mt-4">
+                                                                        Delete
+                                                                     </button>
+                                                                      </div>
+                                                                      serial++;
+                                                  
+                                                                  }
+                                                
                                             }
+
+                                                     }
                                         
-                                            
                                         }
-                                        }
+
                                     
                                     }
-                                }
+                           }
                             
                         </div>
                     </div>
@@ -214,6 +240,11 @@
     public BlazoredTextEditor QuillHtml { get; set; } = new BlazoredTextEditor();
     public List<string> pics { get; set; } = new List<string>();
     public string pathForImage { get; set; }
+    public IEnumerable<RoomTypes> roomTypes{ get; set; } = new List <RoomTypes>();
+    public RoomTypes GetRoomTypes { get; set; } = new RoomTypes();
+    private string? roomTypeId { get; set; } 
+
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -223,6 +254,7 @@
             Title = "Update";
 
             HotelRoomModel = await _hotelRoomService.GetHotelRoomById(Id);
+            roomTypes =  await _hotelRoomService.GetRoomTypes();
             if (HotelRoomModel?.HotelRoomImages != null)
             {
                 HotelRoomModel.ImageUrls = HotelRoomModel.HotelRoomImages.Select(u => u.roomImage).ToList();
@@ -289,10 +321,15 @@
                 HotelRoomModel.details = await QuillHtml.GetHTML();
                 //update
                 createHotelRoomModel.Id = Id;
+                foreach (var item in createHotelRoomModel.hotelRoomImages)
+                {
+                    item.roomId=Guid.NewGuid().ToString();
+                }
+                createHotelRoomModel.roomTypeId = roomTypeId;
                 var updateRoomResult = await _hotelRoomService.UpdateHotelRoom(Id, createHotelRoomModel);
                 var response = updateRoomResult;
                 if ((HotelRoomModel.ImageUrls != null && HotelRoomModel.ImageUrls.Any()) ||
-                (DeleteImagesNames != null && DeleteImagesNames.Any())) ;
+                (DeleteImagesNames != null && DeleteImagesNames.Any()));
                 {
                     if (DeleteImagesNames != null && DeleteImagesNames.Any())
                     {
@@ -377,6 +414,7 @@
         try
         {
             var imageIndex = HotelRoomModel.ImageUrls.FindIndex(x => x == imageUrl);
+            var index = HotelRoomModel.HotelRoomImages.FindIndex(x => x.roomImage == imageUrl);
             var imageName = imageUrl.Replace($"{NavigationManager.BaseUri}RoomImages/", "");
             if (HotelRoomModel.id == null && Title == "create")
             {
@@ -388,7 +426,10 @@
                 DeleteImagesNames ??= new List<string>();
                 DeleteImagesNames.Add(imageUrl);
             }
-            HotelRoomModel.ImageUrls.RemoveAt(imageIndex);
+           
+             HotelRoomModel.ImageUrls.Remove(imageUrl);
+             HotelRoomModel.HotelRoomImages.RemoveAt(imageIndex);
+                
         }
         catch (Exception ex)
         {
@@ -399,7 +440,7 @@
 
     private async Task<string> ImageToBase64(string _imagePath)
     {
-        pathForImage = _imagePath;
+        
         string _base64String = null;
 
         using (System.Drawing.Image _image = System.Drawing.Image.FromFile(_imagePath))
@@ -409,7 +450,7 @@
                 _image.Save(_mStream, _image.RawFormat);
                 byte[] _imageBytes = _mStream.ToArray();
                 _base64String = Convert.ToBase64String(_imageBytes);
-
+                pathForImage = _base64String;
                 return //"data:image/jpg;base64," + 
                 _base64String;
             }
@@ -436,7 +477,7 @@
                         var uploadedImagePath = await FileUPload.uploadFile(file);
 
                         var b64string = await ImageToBase64(uploadedImagePath);
-                        var fb64image = await LoadBase64(b64string);
+                        
 
                         images.Add(b64string);
 

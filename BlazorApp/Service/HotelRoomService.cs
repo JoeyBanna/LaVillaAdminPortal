@@ -99,7 +99,9 @@ namespace BlazorApp.Service
             try
             {
                 var url = "https://psl-app-vm3/HotelAdminAPI/api/HotelRooms/UpdateHotelRoom/" + hotelRoomId;
+
                 var json = JsonConvert.SerializeObject(hotelRoomDTO);
+
                 var data = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await _httpClient.PutAsync(url, data);
                 var content = await response.Content.ReadAsStringAsync();
@@ -130,6 +132,24 @@ namespace BlazorApp.Service
             }
 
             return null;
+        }
+        public async Task<IEnumerable<RoomTypes>> GetRoomTypes()
+        {
+            var url = "https://psl-app-vm3/HotelAdminAPI/api/Codes/GetCodesByType/HOTRT";
+            var response = await _httpClient.GetAsync(url);
+            var content = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+
+                var hotelroom = JsonConvert.DeserializeObject<IEnumerable<RoomTypes>>(content);
+                return hotelroom;
+            }
+            else
+            {
+                var errorModel = JsonConvert.DeserializeObject<ErrorModel>(content);
+                throw new Exception(errorModel.ErrorMessage);
+            }
+
         }
 
        
