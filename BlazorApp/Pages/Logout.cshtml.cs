@@ -15,7 +15,7 @@ namespace BlazorApp.Pages
             return SignOut(
                 new AuthenticationProperties
                 {
-                    RedirectUri = "https://localhost:44332"
+                    RedirectUri = "https://psl-app-vm3:8092"
                 },
                 OpenIdConnectDefaults.AuthenticationScheme,
                 CookieAuthenticationDefaults.AuthenticationScheme);

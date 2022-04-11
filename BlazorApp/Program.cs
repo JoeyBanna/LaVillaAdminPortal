@@ -18,6 +18,7 @@ using Microsoft.IdentityModel.Logging;
 using BlazorApp.Hubs;
 using MudBlazor;
 using BlazorApp.Helper;
+using BlazorApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(Options => Options.UseSqlSer
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 //builder.Services.AddHttpClient<IHotelAmenityRepository, HotelAmenityRepository>(client => client.BaseAddress = new Uri("https://localhost:7063/"));
 //builder.Services.AddHttpClient<IHotelRoomRepository, HotelRoomRepository>(client => client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("BaseAPIUrl")));
+
+var fileConfig = new FileConfig();
+builder.Configuration.Bind("FileConfig", fileConfig);
+builder.Services.AddSingleton(fileConfig);
 
 //builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

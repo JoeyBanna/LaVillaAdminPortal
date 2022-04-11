@@ -1,4 +1,6 @@
-﻿using BlazorApp.Service.IService;
+﻿using BlazorApp.ModelsModels;
+using BlazorApp.Service.IService;
+
 
 namespace BlazorApp.Service
 {
@@ -6,7 +8,7 @@ namespace BlazorApp.Service
     {
         private int _executionCount;
         private readonly ILogger<DefaultScopedProcessingService> _logger;
-
+      
         public DefaultScopedProcessingService(
             ILogger<DefaultScopedProcessingService> logger) =>
             _logger = logger;
@@ -20,7 +22,7 @@ namespace BlazorApp.Service
                     "{ServiceName} working, execution count: {Count}",
                     nameof(DefaultScopedProcessingService),
                     _executionCount);
-
+                 
                 await Task.Delay(10_000, stoppingToken);
             }
         }

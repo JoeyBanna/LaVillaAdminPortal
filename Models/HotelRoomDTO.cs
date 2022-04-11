@@ -38,6 +38,7 @@ namespace BlazorApp.Models
         public DateTime createdDate { get; set; }
         public object updatedBy { get; set; }
         public DateTime updatedDate { get; set; }
+        public string roomtypeName { get; set; }    
         public virtual List<HotelRoomImage> HotelRoomImages { get; set; }
         public List<string> ImageUrls { get; set; }
 

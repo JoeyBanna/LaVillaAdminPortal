@@ -39,10 +39,10 @@ namespace BlazorApp.Service
         {
             try
             {
-                //FileInfo fileInfo = new FileInfo(file.Name);
-                //var fileName = Guid.NewGuid().ToString() + fileInfo.Extension;
-                //var folderDirectory = $"{_webHostEnvironment.WebRootPath}\\RoomImages";
-                //var path = Path.Combine(_webHostEnvironment.WebRootPath, "RoomImages", fileName);
+                  FileInfo fileInfo = new FileInfo(file.Name);
+                //    var fileName = Guid.NewGuid().ToString() + fileInfo.Extension;
+                //    var folderDirectory = $"{_webHostEnvironment.WebRootPath}\\RoomImages";
+                //    var path = Path.Combine(_webHostEnvironment.WebRootPath, "RoomImages", fileName);
 
                 //var memoryStream = new MemoryStream();
                 //await file.OpenReadStream().CopyToAsync(memoryStream);
@@ -54,12 +54,15 @@ namespace BlazorApp.Service
                 //{
                 //    memoryStream.WriteTo(fs);
                 //}
-              
+                
 
                 //var url = $"{_httpContextAccessor.HttpContext.Request.Scheme }://{_httpContextAccessor.HttpContext.Request.Host.Value}/";
                 //var fullPath = $"{url}RoomImages/{fileName}";
                 //return fullPath;    
-                return @"C:\Users\JLamptey\Downloads\course_17\77 HiddenVilla Blazor\Villa Images\" + file.Name;    
+
+                //var path = Path.GetFileName("\\") + file.Name;
+                return fileInfo.FullName;
+               // return @"C:\Users\JLamptey\Downloads\course_17\77 HiddenVilla Blazor\Villa Images\" + file.Name;    
             } 
             catch (Exception ex)
             {

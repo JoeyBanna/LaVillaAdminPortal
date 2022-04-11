@@ -52,7 +52,7 @@
                     @if(Title == "Update")
                     {
                          <div class="form-group">
-                       <MudSelect T="string" Label="Room Types" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Clearable="true" Required="true">
+                       <MudSelect T="string" Label="Room Types" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter"  Required="true">
                             @foreach(var item in roomTypes)
                                 {
                                 <MudSelectItem Value="@item.name" />
@@ -123,7 +123,6 @@
                                 <div class="col-md-12">
                                     <span><i class="fa fa-spin fa-spinner"></i> Please wait ... Images are loading </span>
                                 </div>
-
                             }
                             @if ( HotelRoomModel.ImageUrls != null && createHotelRoomModel.hotelRoomImages.Count > 0)
                                 
@@ -136,66 +135,73 @@
                                             <div class="col-md-2 mt-3">
                                                 <div>
                                                      <img src="data:image/jpg;base64,@roomImage" style="background-image" width="170" height="150" >
+                                                     @*<img src="@roomImage" style="background-image" width="170" height="150" >*@
+                                                     <span class="room-image-tittle">@serial</span>
                                                  
                                                 </div>
                                                
                                                 <button type="button" @onclick="()=>DeletePhoto(roomImage)" class="btn btn-outline-danger btn-block mt-4">
                                                     Delete
                                               </button>
-                                                </div>
-                                        }
-                                        else
+                                              
+                                        </div>
+                                        serial++;
+                                    }
+                                    else
+                                    {
+                                        if(Title == "Update" && roomImage == pathForImage)
                                         {
-                                              @* System.IO.FileInfo fileInfo = new System.IO.FileInfo(roomImage);
-                                                if(fileInfo.Extension.ToLower() != ".jpg" || fileInfo.Extension.ToLower() != ".png" || fileInfo.Extension.ToLower() != ".jpeg")
-                                                    {*@ 
-                                                if( roomImage.Equals(pathForImage) && Title == "Update"   )
-                                                {
-                                             
-                                                            <div class="col-md-2 mt-3">
-                                                                <div>
-                                                                     <img src="data:image/jpg;base64,@roomImage" style="background-image" width="170" height="150" >
-                                                 
-                                                                </div>
-                                               
-                                                                <button type="button" @onclick="()=>DeletePhoto(roomImage)" class="btn btn-outline-danger btn-block mt-4">
-                                                                    Delete
-                                                              </button>
+                                            <div class="col-md-2 mt-3">
+                                                     <div>
+                                                        <img src="data:image/jpg;base64,@roomImage" style="background-image" width="170" height="150" >
+                                                      </div>
+                                                     <button type="button" @onclick="()=>DeletePhoto(roomImage)" class="btn btn-outline-danger btn-block mt-4">
+                                                            Delete
+                                                     </button>
                                             </div>
 
                                         }
                                         else
-
                                         {
+                                           var check =  roomImage.StartsWith("https");
 
-                                            if (!HotelRoomModel.ImageUrls.Equals(pathForImage) && Title == "Update"   )
+                                            if(!roomImage.Equals(pathForImage) && check == true && Title == "Update")
                                             {
-                                                
-                                                                System.IO.FileInfo fileInfo = new System.IO.FileInfo(roomImage);
-                                                                if (fileInfo.Extension.ToLower() != ".jpg" || fileInfo.Extension.ToLower() != ".png" || fileInfo.Extension.ToLower() != ".jpeg")
-                                                                {
-                                                                        <div class="col-md-2 mt-3">
-                                                                    <div class="room-image" style="background: url('@roomImage') 50% 50%; ">
-                                                                        <span class="room-image-tittle">@serial</span>
-                                                                    </div>
-                                                                    <button type="button" @onclick="()=>DeletePhoto(roomImage)" class="btn btn-outline-danger btn-block mt-4">
-                                                                        Delete
-                                                                     </button>
-                                                                      </div>
-                                                                      serial++;
-                                                  
-                                                                  }
-                                                
+                                                   
+                                                <div class="col-md-2 mt-3">
+                                                <div class="room-image" style="background: url('@roomImage') 50% 50%; ">
+                                                <span class="room-image-tittle">@serial</span>
+                                                </div>
+                                               <button type="button" @onclick="()=>DeletePhoto(roomImage)" class="btn btn-outline-danger btn-block mt-4">
+                                                    Delete
+                                              </button>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                               var nextIn =  roomImage.Count();
+                                                var inde = roomImage[0];
+                                                if(!roomImage.Equals(pathForImage) && inde >  0 && check == false && Title == "Update")
+                                                {
+                                                        
+                                                 <div class="col-md-2 mt-3">
+                                                     <div>
+                                                        <img src="data:image/jpg;base64,@roomImage" style="background-image" width="170" height="150" >
+                                                      </div>
+                                                     <button type="button" @onclick="()=>DeletePhoto(roomImage)" class="btn btn-outline-danger btn-block mt-4">
+                                                            Delete
+                                                     </button>
+                                            </div>
+                                                    inde++;
+                                                }
                                             }
 
-                                                     }
-                                        
+
                                         }
 
-                                    
+                                        }
                                     }
                            }
-                            
                         </div>
                     </div>
                    
@@ -243,7 +249,7 @@
     public IEnumerable<RoomTypes> roomTypes{ get; set; } = new List <RoomTypes>();
     public RoomTypes GetRoomTypes { get; set; } = new RoomTypes();
     private string? roomTypeId { get; set; } 
-
+    public System.Drawing.Size Size { get; }
 
 
     protected override async Task OnInitializedAsync()
@@ -255,6 +261,14 @@
 
             HotelRoomModel = await _hotelRoomService.GetHotelRoomById(Id);
             roomTypes =  await _hotelRoomService.GetRoomTypes();
+            // foreach(var items in roomTypes)
+            //{
+            //    if(items.id == createHotelRoomModel.roomTypeId)
+            //    {
+            //        createHotelRoomModel.roomTypeName = items.name;
+            //    }
+
+            //}
             if (HotelRoomModel?.HotelRoomImages != null)
             {
                 HotelRoomModel.ImageUrls = HotelRoomModel.HotelRoomImages.Select(u => u.roomImage).ToList();
@@ -349,25 +363,25 @@
             }
             else
             {
-                //if (HotelRoomModel.name != null)
-                //{
-                //    await JsRuntime.ToastError("Hotel room name already exist");
-                //    return;
-                //}   
+                if (createHotelRoomModel.name == Name )
+                {
+                    await JsRuntime.ToastError("Hotel room name already exist");
+                    return;
+                }
+                else
+                {
+                    //create
+                    Title = "Create";
+                    createHotelRoomModel.details = await QuillHtml.GetHTML();
 
-                //create
-                Title = "Create";
-                createHotelRoomModel.details = await QuillHtml.GetHTML();
+                    var createdResult = await _hotelRoomService.CreateHotelRoomModel(createHotelRoomModel);
 
-                var createdResult = await _hotelRoomService.CreateHotelRoomModel(createHotelRoomModel);
+                    var response = createdResult;
+                    //await AddHotelRoomImage(response);
 
-                var response = createdResult;
-                //await AddHotelRoomImage(response);
+                    await JsRuntime.ToastrSuccess("Hotel room successfully created.");
 
-                await JsRuntime.ToastrSuccess("Hotel room successfully created.");
-
-
-
+                }
 
             }
         }
@@ -426,10 +440,10 @@
                 DeleteImagesNames ??= new List<string>();
                 DeleteImagesNames.Add(imageUrl);
             }
-           
-             HotelRoomModel.ImageUrls.Remove(imageUrl);
-             HotelRoomModel.HotelRoomImages.RemoveAt(imageIndex);
-                
+
+            HotelRoomModel.ImageUrls.Remove(imageUrl);
+            HotelRoomModel.HotelRoomImages.RemoveAt(imageIndex);
+
         }
         catch (Exception ex)
         {
@@ -438,23 +452,37 @@
         }
     }
 
-    private async Task<string> ImageToBase64(string _imagePath)
+    private async Task<string> ImageToBase64(string image)
     {
-        
-        string _base64String = null;
 
-        using (System.Drawing.Image _image = System.Drawing.Image.FromFile(_imagePath))
+        try {
+            //var filePath = $"{FileConfig.Current.FilePath}\\" + image;
+
+            byte[] imgdata = System.IO.File.ReadAllBytes(image);
+
+            var base64String = Convert.ToBase64String(imgdata);
+
+            return base64String;
+        } catch(Exception ex)
         {
-            using (MemoryStream _mStream = new MemoryStream())
-            {
-                _image.Save(_mStream, _image.RawFormat);
-                byte[] _imageBytes = _mStream.ToArray();
-                _base64String = Convert.ToBase64String(_imageBytes);
-                pathForImage = _base64String;
-                return //"data:image/jpg;base64," + 
-                _base64String;
-            }
+            throw ex;
         }
+
+
+        //string _base64String = null;
+
+        //using (System.Drawing.Image _image = System.Drawing.Image.FromFile(_imagePath))
+        //{
+        //    using (MemoryStream _mStream = new MemoryStream())
+        //    {
+        //        _image.Save(_mStream, _image.RawFormat);
+        //        byte[] _imageBytes = _mStream.ToArray();
+        //        _base64String = Convert.ToBase64String(_imageBytes);
+        //        pathForImage = _base64String;
+        //        return //"data:image/jpg;base64," + 
+        //        _base64String;
+        //    }
+        //}
     }
 
 
@@ -468,21 +496,35 @@
             var converted = new List<string>();
             if (e.GetMultipleFiles().Count > 0)
             {
+
+                var maxFiles = 5;
+                var maxSize = 512000000;
+
                 foreach (var file in e.GetMultipleFiles())
                 {
+                    //using (Stream memStream = new MemoryStream(bytes))
+                    //  {
+                    //    using (Image img = System.Drawing.Image.FromStream(memStream))
+                    //    {
+                    //      int width = img.Width;
+                    //      int height = img.Height;
+                    //    }
+                    //  }
+                    var name =  file.GetType().FullName;
+                    var format = file.ContentType;
+                    var image = await file.RequestImageFileAsync(format, 365, 365);
+                    var buffer = new byte[image.Size];
+                    await image.OpenReadStream(maxAllowedSize: maxSize).ReadAsync(buffer);
 
-                    System.IO.FileInfo fileInfo = new System.IO.FileInfo(file.Name);
+                    FileInfo fileInfo = new FileInfo(file.Name);
                     if (fileInfo.Extension.ToLower() == ".jpg" || fileInfo.Extension.ToLower() == ".png" || fileInfo.Extension.ToLower() == ".jpeg")
                     {
-                        var uploadedImagePath = await FileUPload.uploadFile(file);
-
-                        var b64string = await ImageToBase64(uploadedImagePath);
-                        
-
-                        images.Add(b64string);
-
-
-                       
+                        //var uploadedImagePath = await FileUPload.uploadFile(file);
+                        //var b64string = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
+                        var b64string = Convert.ToBase64String(buffer);
+                        //var b64string = await ImageToBase64(fileInfo.FullName);
+                        pathForImage = b64string;
+                        images.Add(b64string);                       
                     }
                     else
                     {
