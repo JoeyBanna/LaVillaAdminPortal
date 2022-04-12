@@ -19,7 +19,7 @@
                    <DataAnnotationsValidator />
                      @*<ValidationSummary />*@
                   <div class="form-group">
-                        <label>Name</label>
+                        <label>Customer Name</label>
                         <InputText @bind-Value="customerBooking.customerName" class="form-control" disabled></InputText>
                 </div>
                  <div class="form-group mt-4">
@@ -34,7 +34,7 @@
                 </div>
                     <div class="form-group mt-4 ">
                     <label>Check-In-Date</label>
-                    <InputDate @bind-Value="customerBooking.checkedInAt" class="form-control" disabled></InputDate>
+                    <InputText @bind-Value="customerBooking.dateOfBookings" class="form-control" disabled></InputText>
                    
                 </div>
                     <div class="form-group mt-4 ">
@@ -44,7 +44,8 @@
                 </div>
                  <div class="form-group mt-4 ">
                     <label>Paid Amount</label>
-                    <InputNumber @bind-Value="customerBooking.amountPaid" class="form-control" disabled></InputNumber>
+                    <InputText @bind-Value=@customerBooking.currency class="form-control" PlaceHolder = "$"  disabled>
+                    </InputText>
                    
                 </div>
                 @*<div class="form-group mt-4 ">
@@ -88,14 +89,18 @@
     private IEnumerable<CustomerBooking> customerBookings { get; set; } = new List<CustomerBooking>();
     private Notifications notify { get; set; } = new Notifications();
     private NotificationReadResponse notificationReadResponse { set; get; } = new NotificationReadResponse();
+    public string dollar = "$";
 
 
 
 
     protected override async Task OnInitializedAsync()
     {
-         await notification.Updatenotifications(notifyu, notificationReadResponse);
+        await notification.Updatenotifications(notifyu, notificationReadResponse);
+
         customerBooking = await customeerBookingService.GetBooking(Id);
+        customerBooking.currency =  customerBooking.amountPaid.ToString("c3");
+        customerBooking.dateOfBookings = customerBooking.checkedInAt.ToString("dd MMMM yyyy");
     }
 
 

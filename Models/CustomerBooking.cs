@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace BlazorApp.Models
         public DateTime? checkInDate { get; set; }
         public DateTime checkedInAt { get; set; }
         public bool? isCheckedOut { get; set; }
+        public string currency { get; set; }
+        public string dateOfBookings { get; set; }
     }
     public class Cust
     {

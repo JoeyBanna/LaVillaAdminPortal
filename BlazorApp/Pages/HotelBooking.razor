@@ -20,54 +20,7 @@
 
 <PageTitle>Booking Report</PageTitle>
 
-@*<div class="row mt-4">
-    <div class="col-12">
-        <table class="table table-bordered table">
-            <thead>
-                <tr>
-                    <th>Customer Name</th>
-                    <th>Mobile</th>
-                     <th>Check-In-Date</th>
-                     <th>Days Booked</th>
-                     <th> check out</th>
-                     <th>Paid Amount</th>
-                 
-                </tr>
-            </thead>
-            <tbody>
-                @if (customerBookings.Any())
-                {
-                    foreach(var bookings in customerBookings)
-                    {
-                        <tr>
-                       
-                        <td>@bookings.customerName</td>
-                         <td>@bookings.customerMobile</td>
-                        <td>@bookings.checkInDate</td>
-                        <td>@bookings.daysBooked</td>
-                        <td>@bookings.isCheckedOut</td>
-                        <td>@bookings.amountPaid</td>
-                       
-                        
-                       
-                      
-                       
-                        <td>
-                             <NavLink href="@($"booking-Id/{bookings.id}")" class="btn btn-primary">View</NavLink> 
-                            
-                        </td>
-                        </tr>
-                    }
-                }
-                else
-                {
-                    <div class="spinner"></div>
-                   
-                }
-            </tbody>
-        </table>
-    </div>
-</div>*@
+
 <MudTable Items="@customerBookings" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<CustomerBooking,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Bookings</MudText>
@@ -87,10 +40,10 @@
         {
              <MudTd DataLabel="Customer Name">@context.customerName</MudTd>
         <MudTd DataLabel="Mobile">@context.customerMobile</MudTd>
-        <MudTd DataLabel="Check In Date">@context.checkedInAt</MudTd>
+        <MudTd DataLabel="Check In Date">@context.checkedInAt.ToString("dd MMMM yyyy")</MudTd>
         <MudTd DataLabel="Days Booked">@context.daysBooked</MudTd>
         <MudTd DataLabel="CheckOut">@context.isCheckedOut</MudTd>
-        <MudTd DataLabel="Paid Amount">@context.amountPaid</MudTd>
+        <MudTd DataLabel="Paid Amount">@context.amountPaid.ToString("c3")</MudTd>
         <MudTd DataLabel="button">
                <NavLink href="@($"booking-Id/{context.id}")" class="btn btn-primary">View</NavLink> 
                             
@@ -130,6 +83,9 @@
     private CustomerBooking selectedItem1;
 
 
+    
+
+    
 
 
     private async Task GetClaimsPrincipalData()
@@ -151,9 +107,11 @@
     }
     protected override async Task OnInitializedAsync()
     {
-        //HotelAmenity = await hotelAmenityService.GetAllHotelAmenities());
+        
 
         customerBookings = await customerBookingServ.getAllBooking();
+   
+        
     }
 
 
@@ -176,32 +134,6 @@
         return false;
     }
 
-    //private async Task HandleDelete(string bookingId)
-    //{
-    //    DeleteBookingId = bookingId;
-    //    await JSruntime.InvokeVoidAsync("showDeleteConfirmationModal");
-    //}
-
-    //public async Task ConfirmDelete_Click(bool isConfirmed)
-    //{
-    //    IsProcessing = true;
-    //    if(isConfirmed && DeleteBookingId != null)
-    //    {
-    //        try
-    //        {
-    //            var result = await customerBookingServ.CancelBooking(DeleteBookingId);
-    //            await JSruntime.ToastrSuccess("Booking canceled successfully");
-    //        }
-    //        catch (Exception e)
-    //        {
-    //            await JSruntime.ToastError(e.Message);
-    //        }
-    //        customerBookings = await customerBookingServ.getAllBooking();
-
-    //    }
-    //     await JSruntime.InvokeVoidAsync("HideDeleteConfirmationModal");
-    //    IsProcessing = false;
-
-    //}
+   
     
  }

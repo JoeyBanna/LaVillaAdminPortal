@@ -24,22 +24,22 @@
                    <DataAnnotationsValidator />
                      @*<ValidationSummary />*@
                   <div class="form-group">
-                        <label>Name</label>
+                        <label>Amenity Name <strong class="text-danger">*</strong></label>
                         <InputText @bind-Value="hotelAmenityDTOModel.Name" class="form-control"></InputText>
                         <ValidationMessage For="()=>hotelAmenityDTOModel.Name"></ValidationMessage>
                 </div>
                  <div class="form-group mt-4">
-                    <label>Description</label>
+                    <label>Description <strong class="text-danger">*</strong></label>
                     <InputText @bind-Value="hotelAmenityDTOModel.Description" class="form-control"></InputText>
                      <ValidationMessage For="()=>hotelAmenityDTOModel.Description"></ValidationMessage>
                 </div>
                 <div class="form-group mt-4 ">
-                    <label>Timing</label>
+                    <label>Duration <strong class="text-danger">*</strong></label>
                     <InputText @bind-Value="hotelAmenityDTOModel.Timing" class="form-control"></InputText>
                     <ValidationMessage For="()=>hotelAmenityDTOModel.Timing"></ValidationMessage>
                 </div>
                  <div class="form-group mt-4 ">
-                    <label for ="icon" class="col-sm-3">Icon</label>
+                    <label for ="icon" class="col-sm-3">Icon <strong class="text-danger">*</strong></label>
                     <InputSelect id="icon" @bind-Value="hotelAmenityDTOModel.IconStyle" class="form-control">
                         <option value="">---</option>
                         <option>fas fa-gamepad</option>
@@ -77,7 +77,9 @@
                     }
                  
               </EditForm>
+               
          </div>
+          <MudAlert Severity="Severity.Info" Class="mt-3 mud-width-full" Style="max-width:250px;" Elevation="25"> (*) Required Fields</MudAlert>
       </div>
     </div>
 </div>

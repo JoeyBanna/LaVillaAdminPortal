@@ -27,6 +27,7 @@ namespace BlazorApp.Models
 
         public string id { get; set; }
         [Required(ErrorMessage = "Enter room name")]
+        [Display(Name = "Room Name")]
         public string name { get; set; }
         [Required(ErrorMessage = "Enter occupancy")]
         public int occupancy { get; set; }
