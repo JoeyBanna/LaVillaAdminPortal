@@ -1,0 +1,31 @@
+﻿@page "/fetchdata2"
+@inject ILocalStorageService localStorage
+
+@using MudBlazor
+@using BlazorApp.Models
+<MudDialog>
+    <DialogContent>
+        <div> 
+            <img src="@imageParse.imageUri" />
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    public ImageParse imageParse { get; set; } = new ImageParse();
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if(await localStorage.GetItemAsync<ImageParse>("InitialImageUri") != null)
+        {
+            imageParse =await localStorage.GetItemAsync<ImageParse>("InitialImageUri");
+        }
+    }
+}

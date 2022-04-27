@@ -155,17 +155,9 @@ a, .btn-link {
     background-repeat: no-repeat;
 }
 
-.hovering {
-    display: block;
-    width: 200px;
-    height: 200px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    transform: scale(2.0);
-}
+
     .hovering:hover {
-        transition-delay: 1s;
+        transition-delay: 3s;
         transition-duration: 0s;
     
     }

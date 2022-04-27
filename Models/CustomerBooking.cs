@@ -21,6 +21,7 @@ namespace BlazorApp.Models
         public DateTime? checkInDate { get; set; }
         public DateTime checkedInAt { get; set; }
         public bool? isCheckedOut { get; set; }
+        public DateTime checkedOutAt { get; set; }
         public string currency { get; set; }
         public string dateOfBookings { get; set; }
     }

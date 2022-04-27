@@ -19,6 +19,7 @@ using BlazorApp.Hubs;
 using MudBlazor;
 using BlazorApp.Helper;
 using BlazorApp.Models;
+using Blazored.Modal;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 var fileConfig = new FileConfig();
 builder.Configuration.Bind("FileConfig", fileConfig);
 builder.Services.AddSingleton(fileConfig);
+builder.Services.AddBlazoredModal();
 
 //builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

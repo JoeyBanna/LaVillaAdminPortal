@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <Content Remove="Components\Sample.razor" />
+    <Content Remove="Helper\DialogHelper.razor" />
     <Content Remove="Pages\LearnBlazor\LearnBlazorAdvanced.razor" />
     <Content Remove="Pages\LearnBlazor\LearnBlazorComponent\AnotherChildComponent.razor" />
   </ItemGroup>
@@ -25,6 +26,7 @@
 
   <ItemGroup>
     <None Include="Components\Sample.razor" />
+    <None Include="Helper\DialogHelper.razor" />
     <None Include="Pages\LearnBlazor\LearnBlazorAdvanced.razor" />
     <None Include="Pages\LearnBlazor\LearnBlazorComponent\AnotherChildComponent.razor" />
     <None Include="wwwroot\Images\normal_logo-web.png" />
@@ -38,6 +40,7 @@
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
+    <PackageReference Include="Blazored.Modal" Version="6.0.1" />
     <PackageReference Include="Blazored.TextEditor" Version="1.0.7" />
     <PackageReference Include="IgniteUI.Blazor" Version="21.2.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.2" />

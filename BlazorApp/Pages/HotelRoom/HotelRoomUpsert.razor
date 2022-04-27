@@ -1,13 +1,16 @@
 ﻿@page "/hotel-room/create"
 @page "/hotel-room/edit/{Id}"
+
 @using BlazorApp.ModelsModels
 @using Microsoft.AspNetCore.Authorization
+@using MudBlazor
 @attribute [Authorize]
 @using Business.Repository.IRepository
 @using BlazorApp.Models
 @using BlazorApp.Service.IService
 @using System.Drawing
 @using global::Models
+@using static MudBlazor.CategoryTypes
 @inject IHotelRoomImagesRepository HotelRoomImageRepository
 @inject IHotelRoomRepository HotelRoomRepository
 @inject NavigationManager NavigationManager
@@ -15,12 +18,32 @@
 @inject IFileUpload FileUPload
 @inject BlazorApp.Service.IHotelRoomService _hotelRoomService
 @inject BlazorApp.Service.IService.IHotelRoomImageService _hotelImageService
+@inject IModalService modal 
+@inject IDialogService DialogService
+@inject ILocalStorageService localStorage
+
+
 
 <PageTitle> Hotel Room</PageTitle>
 
 <div class="row mt-2 mb-5">
+    @*Css for hovering*@
+    <style>
+        .hovering {
+    display: block;
+    width: 200px;
+    height: 200px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(/@BackgroundImage);
+    transform: scale(2.0);
+}
+    </style>
+
+   @*Form for villa *@
     <h3 class="card-title text-info mb-3 ml-3">@Title Model Room</h3>
-      
+       <MudAlert Severity="Severity.Info" Class="mt-3 mud-width-full" Style="max-width:250px; margin-left:19px" Elevation="25"> (*) Required Fields</MudAlert>
     <div class="col-md-12">
         <div class="card">
            
@@ -29,6 +52,7 @@
                     <DataAnnotationsValidator />
                     @* <ValidationSummary />*@
                     <div class="form-group">
+                        
                         <label>Villa Name <strong class="text-danger">*</strong> </label>
                         <InputText @bind-Value="createHotelRoomModel.name" class="form-control"></InputText>
                         <ValidationMessage For="()=>createHotelRoomModel.name"></ValidationMessage>
@@ -149,11 +173,12 @@
                                     int serial = 1;
                                     foreach (var roomImage in HotelRoomModel.ImageUrls)
                                     {
+                                      
                                         if(Title == "Create")
                                         {
                                             <div class="col-md-2 mt-3" >
-                                                <div class="@_HoverImageCSSClass" @onmouseout="@OnMouseOut" @onmouseover="@OnMouseOver" >
-                                                     <img src="data:image/jpg;base64,@roomImage" width="170" height="150"  >
+                                                <div >
+                                                     <img class="@_HoverImageCSSClass" src="data:image/jpg;base64,@roomImage" width="170" height="150"  @onmouseout="@OnMouseOut" @onclick="()=>OpenDialog(roomImage)" >
                                                      @*<img src="@roomImage" style="background-image" width="170" height="150" >*@
                                                      
                                                 </div>
@@ -170,8 +195,8 @@
                                         if(Title == "Update" && roomImage == pathForImage)
                                         {
                                             <div class="col-md-2 mt-3">
-                                                     <div class="@_HoverImageCSSClass" @onmouseout="@OnMouseOut" @onmouseover="@OnMouseOver">
-                                                        <img src="data:image/jpg;base64,@roomImage" width="170" height="150" >
+                                                     <div >
+                                                        <img class="@_HoverImageCSSClass" @onmouseout="@OnMouseOut" src="data:image/jpg;base64,@roomImage" width="170" height="150" @onclick="()=>OpenDialog(roomImage)" >
                                                       </div>
                                                      <button type="button" @onclick="()=>DeletePhoto(roomImage)" class="btn btn-outline-danger btn-block mt-4">
                                                             Delete
@@ -181,22 +206,24 @@
                                         }
                                         else
                                         {
-                                           var check =  roomImage.StartsWith("https");
+                                            var check =  roomImage.StartsWith("https");
 
                                             if(!roomImage.Equals(pathForImage) && check == true && Title == "Update")
                                             {
-                                                   
-                                                <div class="col-md-2 mt-3">
-                                                    <div class="@_HoverImageCSSClass" @onmouseout="@OnMouseOut" @onmouseover="@OnMouseOver">
-                                                        <div class="room-image" style="background: url('@roomImage') 50% 50%; ">
+                                                var number = 1; 
+                                                
+                                                <div class="col-md-2 mt-3 ">
+                                                    <div >
+                                                        <div class="room-image @_HoverImageCSSClass" style="background: url('@roomImage') 50% 50%;"  @onmouseout="@OnMouseOut" @onclick="()=>OpenDialog(roomImage)">
                                                         </div>
                                                     </div>
-                                                
                                                <button type="button" @onclick="()=>DeletePhoto(roomImage)" class="btn btn-outline-danger btn-block mt-4">
                                                     Delete
                                               </button>
                                                 </div>
+                                                number++;
                                             }
+                                           
                                             else
                                             {
                                                var nextIn =  roomImage.Count();
@@ -205,7 +232,7 @@
                                                 {
                                                         
                                                  <div class="col-md-2 mt-3">
-                                                     <div class="@_HoverImageCSSClass" @onmouseout="@OnMouseOut" @onmouseover="@OnMouseOver">
+                                                     <div class="@_HoverImageCSSClass" @onmouseout="@OnMouseOut" @onclick="()=>OpenDialog(roomImage)" >
                                                         <img src="data:image/jpg;base64,@roomImage" width="170" height="150" >
                                                       </div>
                                                      <button type="button" @onclick="()=>DeletePhoto(roomImage)" class="btn btn-outline-danger btn-block mt-4">
@@ -245,7 +272,7 @@
                    
                 </EditForm>
             </div>
-             <MudAlert Severity="Severity.Info" Class="mt-3 mud-width-full" Style="max-width:250px;" Elevation="25"> (*) Required Fields</MudAlert>
+            
         </div>
     </div>
 </div>
@@ -270,6 +297,8 @@
     public RoomTypes GetRoomTypes { get; set; } = new RoomTypes();
     private string? roomTypeId { get; set; } 
     public System.Drawing.Size Size { get; }
+    public string BackgroundImage { get; set; }
+    public ImageParse ImageParse{ get; set; } = new ImageParse();
 
 
     protected override async Task OnInitializedAsync()
@@ -281,7 +310,7 @@
 
             HotelRoomModel = await _hotelRoomService.GetHotelRoomById(Id);
             roomTypes =  await _hotelRoomService.GetRoomTypes();
-           
+
             if (HotelRoomModel?.HotelRoomImages != null)
             {
                 HotelRoomModel.ImageUrls = HotelRoomModel.HotelRoomImages.Select(u => u.roomImage).ToList();
@@ -314,7 +343,10 @@
         {
             try
             {
-
+                 
+                //ImageParse.imageUri = BackgroundImage;
+                //await localStorage.SetItemAsync("InitialImageUri", ImageParse);
+                //ImageParse =await localStorage.GetItemAsync<ImageParse>("InitialImageUri");
                 if (!string.IsNullOrEmpty(HotelRoomModel.details))
                 {
                     await this.QuillHtml.LoadHTMLContent(HotelRoomModel.details);
@@ -328,7 +360,7 @@
             }
         }
 
-       
+
     }
 
     private async Task HandleHotelRoomUpsert()
@@ -358,7 +390,7 @@
                         {
                             var imageName = deletedImageName.Replace($"{NavigationManager.BaseUri}RoomImages/", "");
                             var result = FileUPload.DeleteFile(imageName);
-                           
+
                             await HotelRoomImageRepository.DeleteHotelImageByImageURL(deletedImageName);
 
                         }
@@ -382,7 +414,7 @@
                     var createdResult = await _hotelRoomService.CreateHotelRoomModel(createHotelRoomModel);
 
                     var response = createdResult;
-                 
+
 
                     await JsRuntime.ToastrSuccess("Hotel room successfully created.");
 
@@ -398,7 +430,7 @@
 
         NavigationManager.NavigateTo("hotel-room");
     }
-    
+
     internal async Task DeletePhoto(string imageUrl)
     {
         try
@@ -426,6 +458,10 @@
             await JsRuntime.ToastError(ex.Message);
 
         }
+    }
+    internal async Task OnHover(string imageUrl)
+    {
+        await Task.CompletedTask;
     }
 
     private async Task<string> ImageToBase64(string image)
@@ -490,7 +526,7 @@
                     var image = await file.RequestImageFileAsync(format, 250, 250);
                     var buffer = new byte[image.Size];
                     await image.OpenReadStream(maxAllowedSize: maxSize).ReadAsync(buffer);
-                  
+
 
                     FileInfo fileInfo = new FileInfo(file.Name);
                     if (fileInfo.Extension.ToLower() == ".jpg" || fileInfo.Extension.ToLower() == ".png" || fileInfo.Extension.ToLower() == ".jpeg")
@@ -527,18 +563,18 @@
                     }
                     else
                     {
-                        
+
                         HotelRoomModel.ImageUrls = new List<string>();
                         HotelRoomModel.ImageUrls.AddRange(images);
 
                     }
-                    
-                
+
+
                 }
                 else
                 {
                     await JsRuntime.ToastError("Failed to upload image.");
-                    
+
                     return;
                 }
 
@@ -553,25 +589,52 @@
     }
 
     //enlarge image on hover
-     bool _IsHovering = false;
+    bool _IsHovering = false;
     string _HoverImageCSSClass = "";
 
-    protected void OnMouseOver(MouseEventArgs mouseEvent)
-    {
+    //protected void OnMouseOver(MouseEventArgs mouseEvent)
+    //{
 
-        if (!_IsHovering)
-        {
-            _IsHovering = true;
-            _HoverImageCSSClass = "hovering";
-            StateHasChanged();
-        }
-    }
+    //    foreach(var ind in HotelRoomModel.ImageUrls)
+    //    {
+
+    //    if (!_IsHovering)
+    //    {
+    //        var imageIndex = HotelRoomModel.ImageUrls.FindIndex(x => x == ind );
+    //        var index = HotelRoomModel.HotelRoomImages.FindIndex(x => x.roomImage == ind);
+
+    //        _IsHovering = true;
+    //        _HoverImageCSSClass = "hovering";
+    //        StateHasChanged();
+    //    }
+
+    //    }
+
+
+    //}
 
     protected void OnMouseOut(MouseEventArgs mouseEvent)
     {
         _HoverImageCSSClass = "";
         _IsHovering = false;
         StateHasChanged();
+    }
+    public void TrClickedAtIndex(string imageUrl)
+    {
+        if (!_IsHovering)
+        {
+            _IsHovering = true;
+            BackgroundImage = imageUrl;
+            _HoverImageCSSClass = "hovering";
+            StateHasChanged();
+        }
+    }
+    private async void OpenDialog(string imageUrl)
+    {
+        ImageParse.imageUri = imageUrl;
+     await localStorage.SetItemAsync("InitialImageUri", ImageParse);
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<DialogBox>("Selected Image", options);
     }
 }
 
