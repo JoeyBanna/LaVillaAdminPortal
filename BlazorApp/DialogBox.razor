@@ -1,31 +1,51 @@
-﻿@page "/fetchdata2"
+﻿@page "/fetchdata2/{roomimage}"
 @inject ILocalStorageService localStorage
+@inject Models.ImageParse imageParsee
 
 @using MudBlazor
 @using BlazorApp.Models
 <MudDialog>
     <DialogContent>
-        <div> 
-            <img src="@imageParse.imageUri" />
-        </div>
+       
+        @if(ImageSource != null)
+        {
+            
+             var check =  ImageSource.StartsWith("https");
+             if(check != true)
+             { <div >
+                <img  src="data:image/jpg;base64,@ImageSource" style="height:450px;" >
+             </div>
+            }
+            else
+            {
+                 <div> 
+                    <img src="@ImageSource" style="height:450px;"/>
+                </div>
+            }
+        }
+        else
+        {
+            <div>
+                <p>No Image </p>
+            </div>
+        }
+ 
+       
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
         <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
     </DialogActions>
 </MudDialog>
 @code {
+    [Parameter]
+    public string? ImageSource { get; set; }
     public ImageParse imageParse { get; set; } = new ImageParse();
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+
 
     void Submit() => MudDialog.Close(DialogResult.Ok(true));
     void Cancel() => MudDialog.Cancel();
 
-    protected override async Task OnInitializedAsync()
-    {
-        if(await localStorage.GetItemAsync<ImageParse>("InitialImageUri") != null)
-        {
-            imageParse =await localStorage.GetItemAsync<ImageParse>("InitialImageUri");
-        }
-    }
+  
 }

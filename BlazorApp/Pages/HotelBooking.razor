@@ -42,7 +42,7 @@
         <MudTd DataLabel="Mobile">@context.customerMobile</MudTd>
         <MudTd DataLabel="Check In Date">@context.checkedInAt.ToString("dd MMMM yyyy")</MudTd>
         <MudTd DataLabel="Days Booked">@context.daysBooked</MudTd>
-        <MudTd DataLabel="CheckOut">@context.checkedOutAt.ToString("dd MMMM yyyy")</MudTd>
+        <MudTd DataLabel="CheckOut">@context.checkOutAt.ToString("dd MMMM yyyy")</MudTd>
         <MudTd DataLabel="Paid Amount">@context.amountPaid.ToString("c3")</MudTd>
         <MudTd DataLabel="button">
                <NavLink href="@($"booking-Id/{context.id}")" class="btn btn-primary">View</NavLink> 
@@ -107,11 +107,7 @@
     }
     protected override async Task OnInitializedAsync()
     {
-        
-
         customerBookings = await customerBookingServ.getAllBooking();
-   
-        
     }
 
 

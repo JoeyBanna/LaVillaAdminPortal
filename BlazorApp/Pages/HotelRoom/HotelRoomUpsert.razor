@@ -1,6 +1,10 @@
 ﻿@page "/hotel-room/create"
 @page "/hotel-room/edit/{Id}"
 
+@using System.Text.Encodings.Web;
+@using System.Text.Json;
+@using System.Text.Unicode;
+
 @using BlazorApp.ModelsModels
 @using Microsoft.AspNetCore.Authorization
 @using MudBlazor
@@ -9,6 +13,8 @@
 @using BlazorApp.Models
 @using BlazorApp.Service.IService
 @using System.Drawing
+
+
 @using global::Models
 @using static MudBlazor.CategoryTypes
 @inject IHotelRoomImagesRepository HotelRoomImageRepository
@@ -21,6 +27,7 @@
 @inject IModalService modal 
 @inject IDialogService DialogService
 @inject ILocalStorageService localStorage
+
 
 
 
@@ -178,11 +185,10 @@
                                         {
                                             <div class="col-md-2 mt-3" >
                                                 <div >
-                                                     <img class="@_HoverImageCSSClass" src="data:image/jpg;base64,@roomImage" width="170" height="150"  @onmouseout="@OnMouseOut" @onclick="()=>OpenDialog(roomImage)" >
+                                                     <img id="createroomimage" class="@_HoverImageCSSClass" src="data:image/jpg;base64,@roomImage" width="170" height="150"  @onmouseout="@OnMouseOut" @onclick="()=>OpenDialog(roomImage)" >
                                                      @*<img src="@roomImage" style="background-image" width="170" height="150" >*@
                                                      
                                                 </div>
-                                               
                                                 <button type="button" @onclick="()=>DeletePhoto(roomImage)" class="btn btn-outline-danger btn-block mt-4">
                                                     Delete
                                               </button>
@@ -214,7 +220,7 @@
                                                 
                                                 <div class="col-md-2 mt-3 ">
                                                     <div >
-                                                        <div class="room-image @_HoverImageCSSClass" style="background: url('@roomImage') 50% 50%;"  @onmouseout="@OnMouseOut" @onclick="()=>OpenDialog(roomImage)">
+                                                        <div class="room-image @_HoverImageCSSClass" style="background: url('@roomImage') 50% 50%;"  @onmouseout="@OnMouseOut" @onclick="()=>OpenDialog(roomImage)" @bind=@ImageParse.imageUri>
                                                         </div>
                                                     </div>
                                                <button type="button" @onclick="()=>DeletePhoto(roomImage)" class="btn btn-outline-danger btn-block mt-4">
@@ -299,6 +305,7 @@
     public System.Drawing.Size Size { get; }
     public string BackgroundImage { get; set; }
     public ImageParse ImageParse{ get; set; } = new ImageParse();
+    public string createroomimage { get; set; }
 
 
     protected override async Task OnInitializedAsync()
@@ -343,7 +350,7 @@
         {
             try
             {
-                 
+
                 //ImageParse.imageUri = BackgroundImage;
                 //await localStorage.SetItemAsync("InitialImageUri", ImageParse);
                 //ImageParse =await localStorage.GetItemAsync<ImageParse>("InitialImageUri");
@@ -631,10 +638,19 @@
     }
     private async void OpenDialog(string imageUrl)
     {
-        ImageParse.imageUri = imageUrl;
-     await localStorage.SetItemAsync("InitialImageUri", ImageParse);
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<DialogBox>("Selected Image", options);
+        
+        try
+        { 
+            var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth= MaxWidth.ExtraLarge };
+            var parameters = new DialogParameters();
+            parameters.Add("ImageSource", imageUrl);
+            DialogService.Show<DialogBox>("Selected Image", parameters, options);
+        }
+        catch(Exception e)
+        {
+            throw e;
+        }
+
     }
 }
 

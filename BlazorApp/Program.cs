@@ -49,6 +49,7 @@ builder.Services.AddSingleton<MyBackGroundService>();
 builder.Services.AddHostedService(provider => provider.GetService<MyBackGroundService>());
 builder.Services.AddHostedService<ScopedBackgroundService>();
 builder.Services.AddScoped<IScopedProcessingService, DefaultScopedProcessingService>();
+builder.Services.AddScoped<ImageParse>();
 builder.Services.AddScoped<TokenProvider>();
 builder.Services.AddHttpClient("HAIDP", client =>
 {

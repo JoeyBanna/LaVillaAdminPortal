@@ -46,13 +46,16 @@
                         serial = notify.Count();
 
                         }
-                        <a href="notificationpage">
-                              <MudBadge Content="@unreadCount" Overlap="true" Class="mx-6 my-4" Color="Color.Warning" >
+                        @if(unreadCount > 0){
+                            
+                              <MudBadge Content="@unreadCount" Overlap="true" Class="mx-6 my-4" Color="Color.Warning">
                             <MudIcon Icon="@Icons.Material.Filled.Email" Color="Color.Default"  />
-                        </MudBadge> 
-                        </a>
-                       
-                   
+                        </MudBadge>
+
+                        }
+                        else{
+                             <MudIcon Icon="@Icons.Material.Filled.Email" Color="Color.Default"  />
+                             }
                     </div>
                
                <AuthorizeView>
@@ -112,10 +115,11 @@
     {
         UserName = httpContextAccessor.HttpContext.User.Identity.Name;
         notify = await notification.getNotification();
-        
+
     }
-    
-     
+
+
+
     private async Task GetClaimsPrincipal()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -133,6 +137,7 @@
             _authMessage = "The user is NOT authenticated.";
         }
     }
+    
   
   
     
